@@ -11,6 +11,8 @@ const initialSignup = {
 
 function SignUpPage() {
   const [signup, setSignup] = useState(initialSignup)
+  const [showPassword, setShowPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [message, setMessage] = useState('')
   const [messageType, setMessageType] = useState('')
 
@@ -131,16 +133,27 @@ function SignUpPage() {
                 <input
                   id="signupPassword"
                   name="password"
-                  type="password"
+                  type={showPassword ? 'text' : 'password'}
                   value={signup.password}
                   onChange={handleSignupChange}
                   placeholder="Create a password"
+                  minLength="8"
+                  pattern="(?=.*[A-Z])(?=.*[a-z])(?=.*\d).{8,}"
+                  title="Password must be at least 8 characters and include an uppercase letter, a lowercase letter, and a number."
                   aria-label="Password"
                 />
-                <button type="button" className="toggle-password" aria-label="Show password">
+                <button
+                  type="button"
+                  className="toggle-password"
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                  onClick={() => setShowPassword((visible) => !visible)}
+                >
                   👁️
                 </button>
               </div>
+                <span className="password-hint">
+                  At least 8 characters, including uppercase, lowercase, and a number.
+                </span>
             </label>
 
             <label className="field-group" htmlFor="confirmPassword">
@@ -149,13 +162,18 @@ function SignUpPage() {
                 <input
                   id="confirmPassword"
                   name="confirmPassword"
-                  type="password"
+                  type={showConfirmPassword ? 'text' : 'password'}
                   value={signup.confirmPassword}
                   onChange={handleSignupChange}
                   placeholder="Re-enter password"
                   aria-label="Confirm password"
                 />
-                <button type="button" className="toggle-password" aria-label="Show password">
+                <button
+                  type="button"
+                  className="toggle-password"
+                  aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
+                  onClick={() => setShowConfirmPassword((visible) => !visible)}
+                >
                   👁️
                 </button>
               </div>

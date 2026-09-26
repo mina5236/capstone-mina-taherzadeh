@@ -17,6 +17,9 @@ function LoginPage({ onLoginSuccess }) {
   const [isSignUp, setIsSignUp] = useState(false)
   const [signup, setSignup] = useState(initialSignup)
   const [login, setLogin] = useState(initialLogin)
+  const [showSignupPassword, setShowSignupPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+  const [showLoginPassword, setShowLoginPassword] = useState(false)
   const [message, setMessage] = useState('')
   const [messageType, setMessageType] = useState('')
 
@@ -179,16 +182,27 @@ function LoginPage({ onLoginSuccess }) {
                   <input
                     id="signupPassword"
                     name="password"
-                    type="password"
+                    type={showSignupPassword ? 'text' : 'password'}
                     value={signup.password}
                     onChange={handleSignupChange}
                     placeholder="Create a password"
+                    minLength="8"
+                    pattern="(?=.*[A-Z])(?=.*[a-z])(?=.*\d).{8,}"
+                    title="Password must be at least 8 characters and include an uppercase letter, a lowercase letter, and a number."
                     aria-label="Password"
                   />
-                  <button type="button" className="toggle-password" aria-label="Show password">
+                  <button
+                    type="button"
+                    className="toggle-password"
+                    aria-label={showSignupPassword ? 'Hide password' : 'Show password'}
+                    onClick={() => setShowSignupPassword((visible) => !visible)}
+                  >
                     👁️
                   </button>
                 </div>
+                  <span className="password-hint">
+                    At least 8 characters, including uppercase, lowercase, and a number.
+                  </span>
               </label>
 
               <label className="field-group" htmlFor="confirmPassword">
@@ -197,13 +211,18 @@ function LoginPage({ onLoginSuccess }) {
                   <input
                     id="confirmPassword"
                     name="confirmPassword"
-                    type="password"
+                    type={showConfirmPassword ? 'text' : 'password'}
                     value={signup.confirmPassword}
                     onChange={handleSignupChange}
                     placeholder="Re-enter password"
                     aria-label="Confirm password"
                   />
-                  <button type="button" className="toggle-password" aria-label="Show password">
+                  <button
+                    type="button"
+                    className="toggle-password"
+                    aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
+                    onClick={() => setShowConfirmPassword((visible) => !visible)}
+                  >
                     👁️
                   </button>
                 </div>
@@ -248,13 +267,18 @@ function LoginPage({ onLoginSuccess }) {
                   <input
                     id="password"
                     name="password"
-                    type="password"
+                    type={showLoginPassword ? 'text' : 'password'}
                     value={login.password}
                     onChange={handleLoginChange}
                     placeholder="Enter your password"
                     aria-label="Password"
                   />
-                  <button type="button" className="toggle-password" aria-label="Show password">
+                  <button
+                    type="button"
+                    className="toggle-password"
+                    aria-label={showLoginPassword ? 'Hide password' : 'Show password'}
+                    onClick={() => setShowLoginPassword((visible) => !visible)}
+                  >
                     👁️
                   </button>
                 </div>
@@ -280,7 +304,6 @@ function LoginPage({ onLoginSuccess }) {
         )}
 
         <footer className="legal-text">
-          🔒
           <span>
             By continuing, you agree to our <a href="#">Terms &amp; Privacy</a>
             <span className="wrap-text">Policy</span>
