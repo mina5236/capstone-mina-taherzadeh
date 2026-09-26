@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import './App.css'
+import './SignUpPage.css'
 
 const initialSignup = {
   fullName: '',

@@ -1,17 +1,16 @@
 import { useState } from 'react'
-import './App.css'
 import LoginPage from './LoginPage'
 import DashboardPage from './DashboardPage'
 
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [currentUser, setCurrentUser] = useState(null)
 
-  const handleLoginSuccess = () => {
-    setIsAuthenticated(true)
+  const handleLoginSuccess = (user) => {
+    setCurrentUser(user)
   }
 
-  if (isAuthenticated) {
-    return <DashboardPage />
+  if (currentUser) {
+    return <DashboardPage user={currentUser} />
   }
 
   return <LoginPage onLoginSuccess={handleLoginSuccess} />

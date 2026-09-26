@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import './LoginPage.css'
 
 const initialSignup = {
   fullName: '',
