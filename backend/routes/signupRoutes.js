@@ -1,5 +1,5 @@
 const express = require('express')
-const { users } = require('../data/users')
+const users = require('../data/users')
 const { hashPassword, isValidPassword } = require('../utils/password')
 const { isValidEmail, isValidStudentId } = require('../utils/validators')
 
@@ -31,7 +31,7 @@ router.post('/signup', (req, res) => {
     })
   }
 
-  if (users.some((user) => user.email === trimmedEmail)) {
+  if (users.findByEmail(trimmedEmail)) {
     return res.status(409).json({
       message: 'Email address is already registered.'
     })
@@ -43,7 +43,7 @@ router.post('/signup', (req, res) => {
     })
   }
 
-  if (users.some((user) => user.studentId === trimmedStudentId)) {
+  if (users.findByStudentId(trimmedStudentId)) {
     return res.status(409).json({
       message: 'Student ID is already associated with an existing account.'
     })
@@ -56,15 +56,12 @@ router.post('/signup', (req, res) => {
     })
   }
 
-  const newUser = {
-    id: users.length + 1,
+  const newUser = users.insertUser({
     fullName: trimmedFullName,
     email: trimmedEmail,
     studentId: trimmedStudentId,
     passwordHash: hashPassword(password)
-  }
-
-  users.push(newUser)
+  })
 
   return res.status(201).json({
     message: 'Registration successful.',

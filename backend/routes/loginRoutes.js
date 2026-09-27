@@ -1,5 +1,5 @@
 const express = require('express')
-const { users } = require('../data/users')
+const users = require('../data/users')
 const { hashPassword } = require('../utils/password')
 
 const router = express.Router()
@@ -15,7 +15,7 @@ router.post('/login', (req, res) => {
   }
 
   const trimmedEmail = String(email).trim().toLowerCase()
-  const user = users.find((item) => item.email === trimmedEmail)
+  const user = users.findByEmail(trimmedEmail)
 
   if (!user) {
     return res.status(401).json({
@@ -30,6 +30,8 @@ router.post('/login', (req, res) => {
       message: 'Invalid email or password.'
     })
   }
+
+  users.updateLastLogin(user.id)
 
   return res.status(200).json({
     message: 'Login successful.',
