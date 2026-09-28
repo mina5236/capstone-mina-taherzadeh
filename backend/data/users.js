@@ -11,7 +11,8 @@ function toUser(row) {
     passwordHash: row.password_hash,
     role: row.role,
     profilePictureUrl: row.profile_picture,
-    isActive: !!row.is_active
+    isActive: !!row.is_active,
+    createdAt: row.created_at
   }
 }
 
@@ -41,4 +42,18 @@ function updateLastLogin(id) {
   db.prepare("UPDATE users SET last_login = datetime('now') WHERE user_id = ?").run(id)
 }
 
-module.exports = { findByEmail, findByStudentId, findById, insertUser, updateLastLogin }
+function updateUser(id, { fullName, email, passwordHash }) {
+  if (fullName !== undefined) {
+    db.prepare('UPDATE users SET full_name = ? WHERE user_id = ?').run(fullName, id)
+  }
+  if (email !== undefined) {
+    db.prepare('UPDATE users SET email = ? WHERE user_id = ?').run(email, id)
+  }
+  if (passwordHash !== undefined) {
+    db.prepare('UPDATE users SET password_hash = ? WHERE user_id = ?').run(passwordHash, id)
+  }
+
+  return findById(id)
+}
+
+module.exports = { findByEmail, findByStudentId, findById, insertUser, updateLastLogin, updateUser }
