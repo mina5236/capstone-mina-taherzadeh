@@ -10,7 +10,7 @@ function EmptyStateCard({ icon, text }) {
   )
 }
 
-function DashboardPage({ user }) {
+function DashboardPage({ user, onLogout, onNavigate }) {
   // New accounts start with no joined events, no followed clubs, and no active hours yet.
   const upcomingEvents = []
   const popularClubs = []
@@ -74,7 +74,7 @@ function DashboardPage({ user }) {
 
             {openMenu === 'account' && (
               <div className="dropdown-panel">
-                <button type="button" className="dropdown-item">
+                <button type="button" className="dropdown-item" onClick={onLogout}>
                   🚪 Log Out
                 </button>
               </div>
@@ -154,7 +154,7 @@ function DashboardPage({ user }) {
       <div className="fab-wrapper">
         {openMenu === 'quickActions' && (
           <div className="dropdown-panel fab-menu">
-            <button type="button" className="dropdown-item">
+            <button type="button" className="dropdown-item" onClick={() => onNavigate('profile')}>
               👤 My Profile &amp; Settings
             </button>
             <button type="button" className="dropdown-item">
