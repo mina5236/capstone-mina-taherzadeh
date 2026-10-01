@@ -1,6 +1,7 @@
 const express = require('express')
 const users = require('../data/users')
 const { hashPassword } = require('../utils/password')
+const { createSessionToken } = require('../utils/sessionToken')
 
 const router = express.Router()
 
@@ -32,9 +33,11 @@ router.post('/login', (req, res) => {
   }
 
   users.updateLastLogin(user.id)
+  const token = createSessionToken(user)
 
   return res.status(200).json({
     message: 'Login successful.',
+    token,
     user: {
       id: user.id,
       fullName: user.fullName,

@@ -101,7 +101,7 @@ function LoginPage({ onLoginSuccess }) {
       setMessageType('success')
       setMessage(`Welcome back, ${data.user.fullName}!`)
       setLogin(initialLogin)
-      onLoginSuccess?.(data.user)
+      onLoginSuccess?.({ ...data.user, sessionToken: data.token })
     } catch (error) {
       setMessageType('error')
       setMessage(error.message)
