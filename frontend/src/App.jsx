@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import LoginPage from './LoginPage'
+import SignUpPage from './SignUpPage'
 import DashboardPage from './DashboardPage'
 import ProfilePage from './ProfilePage'
 
@@ -25,7 +26,16 @@ function App() {
     return <DashboardPage user={currentUser} onLogout={handleLogout} onNavigate={setView} />
   }
 
-  return <LoginPage onLoginSuccess={handleLoginSuccess} />
+  if (view === 'signup') {
+    return <SignUpPage onBackToLogin={() => setView('login')} />
+  }
+
+  return (
+    <LoginPage
+      onLoginSuccess={handleLoginSuccess}
+      onCreateAccount={() => setView('signup')}
+    />
+  )
 }
 
 export default App

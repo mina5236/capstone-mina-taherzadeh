@@ -9,7 +9,7 @@ const initialSignup = {
   confirmPassword: '',
 }
 
-function SignUpPage() {
+function SignUpPage({ onBackToLogin }) {
   const [signup, setSignup] = useState(initialSignup)
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
@@ -185,6 +185,10 @@ function SignUpPage() {
 
             <button type="submit" className="primary-btn">
               Create Account 🎉
+            </button>
+
+            <button type="button" className="secondary-btn login-switch" onClick={onBackToLogin}>
+              Already have an account? Sign In
             </button>
           </form>
         </section>
