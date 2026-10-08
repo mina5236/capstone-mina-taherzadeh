@@ -1,7 +1,7 @@
 const express = require('express')
 const users = require('../data/users')
 const { hashPassword, isValidPassword } = require('../utils/password')
-const { isValidEmail } = require('../utils/validators')
+const { isValidEmail, isValidFullName } = require('../utils/validators')
 
 const router = express.Router()
 
@@ -49,6 +49,9 @@ router.put('/profile/:userId', (req, res) => {
     const trimmedFullName = String(fullName).trim()
     if (trimmedFullName.length < 2) {
       return res.status(400).json({ message: 'Full name must be at least 2 characters long.' })
+    }
+    if (!isValidFullName(trimmedFullName)) {
+      return res.status(400).json({ message: 'Full name can only contain letters and spaces.' })
     }
     updates.fullName = trimmedFullName
   }

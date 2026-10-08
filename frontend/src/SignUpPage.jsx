@@ -32,6 +32,12 @@ function SignUpPage({ onBackToLogin }) {
       return
     }
 
+    if (!/^\p{L}+(?: \p{L}+)*$/u.test(signup.fullName.trim())) {
+      setMessageType('error')
+      setMessage('Full name can only contain letters and spaces.')
+      return
+    }
+
     try {
       const response = await fetch('http://localhost:3001/api/signup', {
         method: 'POST',

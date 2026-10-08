@@ -7,4 +7,9 @@ function isValidStudentId(studentId) {
   return /^\d{8}$/.test(String(studentId).trim())
 }
 
-module.exports = { isValidEmail, isValidStudentId }
+// Letters only, with single spaces between words (e.g. "Mina Taherzadeh").
+function isValidFullName(fullName) {
+  return /^\p{L}+(?: \p{L}+)*$/u.test(String(fullName).trim())
+}
+
+module.exports = { isValidEmail, isValidStudentId, isValidFullName }

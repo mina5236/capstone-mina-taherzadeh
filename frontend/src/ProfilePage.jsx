@@ -53,6 +53,12 @@ function ProfilePage({ user, onBack, onLogout }) {
     setFormMessage('')
     setFormMessageType('')
 
+    if (!/^\p{L}+(?: \p{L}+)*$/u.test(form.fullName.trim())) {
+      setFormMessageType('error')
+      setFormMessage('Full name can only contain letters and spaces.')
+      return
+    }
+
     const payload = { fullName: form.fullName, email: form.email }
     if (form.password) {
       payload.password = form.password
