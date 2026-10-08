@@ -31,7 +31,7 @@ function findById(id) {
 function insertUser({ fullName, email, studentId, passwordHash }) {
   const result = db
     .prepare(
-      'INSERT INTO users (full_name, email, student_id, password_hash) VALUES (?, ?, ?, ?)'
+      "INSERT INTO users (full_name, email, student_id, password_hash, created_at) VALUES (?, ?, ?, ?, datetime('now', 'localtime'))"
     )
     .run(fullName, email, studentId, passwordHash)
 
@@ -39,7 +39,7 @@ function insertUser({ fullName, email, studentId, passwordHash }) {
 }
 
 function updateLastLogin(id) {
-  db.prepare("UPDATE users SET last_login = datetime('now') WHERE user_id = ?").run(id)
+  db.prepare("UPDATE users SET last_login = datetime('now', 'localtime') WHERE user_id = ?").run(id)
 }
 
 function updateUser(id, { fullName, email, passwordHash }) {

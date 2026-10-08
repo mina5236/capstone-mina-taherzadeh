@@ -3,7 +3,7 @@ import './ProfilePage.css'
 
 function formatMemberSince(createdAt) {
   if (!createdAt) return 'Recently'
-  const date = new Date(createdAt.replace(' ', 'T') + 'Z')
+  const date = new Date(createdAt.replace(' ', 'T'))
   if (Number.isNaN(date.getTime())) return 'Recently'
   return date.toLocaleDateString(undefined, { month: 'long', year: 'numeric' })
 }
