@@ -1,4 +1,4 @@
-﻿import { useState } from 'react'
+import { useState } from 'react'
 import LoginPage from './LoginPage'
 import SignUpPage from './SignUpPage'
 import DashboardPage from './DashboardPage'
@@ -15,6 +15,20 @@ function App() {
   }
 
   const handleLogout = () => {
+    if (currentUser?.sessionToken) {
+      // Best effort: the user is logged out locally even if this request fails.
+      void (async () => {
+        try {
+          await fetch('http://localhost:3001/api/logout', {
+            method: 'POST',
+            headers: { Authorization: `Bearer ${currentUser.sessionToken}` },
+          })
+        } catch {
+          // ignored on purpose
+        }
+      })()
+    }
+
     setCurrentUser(null)
     setView('dashboard')
   }
