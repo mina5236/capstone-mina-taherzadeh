@@ -23,6 +23,19 @@ describe('SignUpPage', () => {
     expect(global.fetch).not.toHaveBeenCalled()
   })
 
+  test('shows an error and does not submit when the full name has non-letters', async () => {
+    const user = userEvent.setup()
+    render(<SignUpPage />)
+
+    await user.type(screen.getByLabelText('Full Name'), 'Mina123')
+    await user.type(screen.getByLabelText('Password'), 'Password1')
+    await user.type(screen.getByLabelText('Confirm password'), 'Password1')
+    await user.click(screen.getByRole('button', { name: /create account/i }))
+
+    expect(await screen.findByText('Full name can only contain letters and spaces.')).toBeInTheDocument()
+    expect(global.fetch).not.toHaveBeenCalled()
+  })
+
   test('F3: registers a new student by submitting the completed form', async () => {
     const user = userEvent.setup()
     global.fetch.mockResolvedValue({

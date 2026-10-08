@@ -92,6 +92,16 @@ describe('POST /signup', () => {
     expect(users.insertUser).toHaveBeenCalled()
   })
 
+  test('rejects a full name containing digits or symbols', async () => {
+    const response = await request(app)
+      .post('/signup')
+      .send({ ...validSignup, fullName: 'Mina123' })
+
+    expect(response.status).toBe(400)
+    expect(response.body.message).toMatch(/only contain letters/i)
+    expect(users.insertUser).not.toHaveBeenCalled()
+  })
+
   test('U8: rejects a weak password', async () => {
     const response = await request(app)
       .post('/signup')
