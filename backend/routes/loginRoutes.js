@@ -1,7 +1,7 @@
 const express = require('express')
 const users = require('../data/users')
 const { hashPassword } = require('../utils/password')
-const { createSessionToken } = require('../utils/sessionToken')
+const { createSessionToken, verifySessionToken, revokeSessionToken } = require('../utils/sessionToken')
 
 const router = express.Router()
 
@@ -44,6 +44,23 @@ router.post('/login', (req, res) => {
       email: user.email,
       studentId: user.studentId
     }
+  })
+})
+
+router.post('/logout', (req, res) => {
+  const match = /^Bearer (.+)$/.exec(req.get('Authorization') || '')
+  const claims = match ? verifySessionToken(match[1]) : null
+
+  if (!claims) {
+    return res.status(401).json({
+      message: 'Invalid or expired session.'
+    })
+  }
+
+  revokeSessionToken(claims)
+
+  return res.status(200).json({
+    message: 'Logged out.'
   })
 })
 
