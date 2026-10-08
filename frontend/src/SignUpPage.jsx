@@ -194,7 +194,6 @@ function SignUpPage({ onBackToLogin }) {
         </section>
 
         <footer className="legal-text">
-          🔒
           <span>
             By continuing, you agree to our <a href="#">Terms &amp; Privacy</a>
             <span className="wrap-text">Policy</span>

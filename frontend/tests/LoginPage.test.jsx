@@ -67,6 +67,66 @@ describe('LoginPage', () => {
 
     expect(onCreateAccount).toHaveBeenCalledTimes(1)
   })
+
+  test('opens an email prompt and requests a password reset link', async () => {
+    const user = userEvent.setup()
+    global.fetch.mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        message: 'If an account exists for this email, a password reset link will be sent.',
+      }),
+    })
+    render(<LoginPage />)
+
+    await user.click(screen.getByRole('button', { name: /forgot password/i }))
+    expect(screen.getByRole('dialog')).toBeInTheDocument()
+    await user.type(screen.getByLabelText('Email to reset'), 'mina@test.com')
+    await user.click(screen.getByRole('button', { name: /send reset link/i }))
+
+    await waitFor(() => expect(global.fetch).toHaveBeenCalledWith(
+      'http://localhost:3001/api/password-reset/request',
+      expect.objectContaining({ method: 'POST' }),
+    ))
+    expect(JSON.parse(global.fetch.mock.calls[0][1].body)).toEqual({ email: 'mina@test.com' })
+    expect(await screen.findByText(/if an account exists/i)).toBeInTheDocument()
+  })
+
+  test('submits a new password from the email-link popup', async () => {
+    const user = userEvent.setup()
+    const onResetTokenCleared = jest.fn()
+    global.fetch.mockResolvedValue({
+      ok: true,
+      json: async () => ({ message: 'Password reset successful.' }),
+    })
+    render(<LoginPage resetToken="email-token" onResetTokenCleared={onResetTokenCleared} />)
+
+    expect(screen.getByRole('dialog')).toBeInTheDocument()
+    await user.type(screen.getByLabelText('New password'), 'NewPassword1')
+    await user.type(screen.getByLabelText('Confirm new password'), 'NewPassword1')
+    await user.click(screen.getByRole('button', { name: /update password/i }))
+
+    await waitFor(() => expect(global.fetch).toHaveBeenCalledWith(
+      'http://localhost:3001/api/password-reset/confirm',
+      expect.objectContaining({ method: 'POST' }),
+    ))
+    expect(JSON.parse(global.fetch.mock.calls[0][1].body)).toEqual({
+      token: 'email-token',
+      password: 'NewPassword1',
+    })
+    expect(await screen.findByText('Password reset successful.')).toBeInTheDocument()
+  })
+
+  test('does not submit mismatched new passwords', async () => {
+    const user = userEvent.setup()
+    render(<LoginPage resetToken="email-token" />)
+
+    await user.type(screen.getByLabelText('New password'), 'NewPassword1')
+    await user.type(screen.getByLabelText('Confirm new password'), 'DifferentPassword1')
+    await user.click(screen.getByRole('button', { name: /update password/i }))
+
+    expect(await screen.findByText('Passwords do not match.')).toBeInTheDocument()
+    expect(global.fetch).not.toHaveBeenCalled()
+  })
 })
 
 describe('App login flow', () => {
@@ -76,6 +136,7 @@ describe('App login flow', () => {
 
   afterEach(() => {
     jest.resetAllMocks()
+    window.history.replaceState({}, '', '/')
   })
 
   test('F1: login with correct credentials opens the dashboard', async () => {
@@ -111,5 +172,15 @@ describe('App login flow', () => {
 
     expect(await screen.findByText('Invalid email or password.')).toBeInTheDocument()
     expect(screen.queryByRole('heading', { name: /hey,/i })).not.toBeInTheDocument()
+  })
+
+  test('arriving from an email reset link opens the reset popup', () => {
+    window.history.pushState({}, '', '/?resetToken=verified-email-token')
+
+    render(<App />)
+
+    const dialog = screen.getByRole('dialog')
+    expect(dialog).toBeInTheDocument()
+    expect(screen.getByLabelText('New password')).toBeInTheDocument()
   })
 })
