@@ -23,7 +23,7 @@ describe('SignUpPage', () => {
     expect(global.fetch).not.toHaveBeenCalled()
   })
 
-  test('submits valid signup data and displays success', async () => {
+  test('F3: registers a new student by submitting the completed form', async () => {
     const user = userEvent.setup()
     global.fetch.mockResolvedValue({
       ok: true,
