@@ -56,4 +56,20 @@ function updateUser(id, { fullName, email, passwordHash }) {
   return findById(id)
 }
 
-module.exports = { findByEmail, findByStudentId, findById, insertUser, updateLastLogin, updateUser }
+function updatePasswordIfUnchanged(id, currentPasswordHash, newPasswordHash) {
+  const result = db
+    .prepare('UPDATE users SET password_hash = ? WHERE user_id = ? AND password_hash = ?')
+    .run(newPasswordHash, id, currentPasswordHash)
+
+  return result.changes === 1
+}
+
+module.exports = {
+  findByEmail,
+  findByStudentId,
+  findById,
+  insertUser,
+  updateLastLogin,
+  updateUser,
+  updatePasswordIfUnchanged,
+}

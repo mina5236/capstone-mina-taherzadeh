@@ -6,8 +6,6 @@ const db = new Database(path.join(__dirname, 'campusconnect.db'))
 db.pragma('journal_mode = WAL')
 db.pragma('foreign_keys = ON')
 
-// Only the tables backed by real routes today. Clubs/Events/Registrations
-// from the ERD get added once those features are actually built.
 db.exec(`
   CREATE TABLE IF NOT EXISTS users (
     user_id INTEGER PRIMARY KEY AUTOINCREMENT,
