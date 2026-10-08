@@ -14,6 +14,7 @@ jest.mock('../data/users', () => ({
 
 const users = require('../data/users')
 const { hashPassword } = require('../utils/password')
+const { verifySessionToken } = require('../utils/sessionToken')
 const app = require('./testApp')
 
 const existingUser = {
@@ -74,5 +75,60 @@ describe('POST /login', () => {
 
     expect(response.status).toBe(400)
     expect(response.body.message).toMatch(/required/i)
+  })
+})
+
+describe('POST /logout', () => {
+  beforeEach(() => {
+    jest.clearAllMocks()
+    users.findByEmail.mockReturnValue(existingUser)
+  })
+
+  async function loginAndGetToken() {
+    const response = await request(app).post('/login').send({
+      email: existingUser.email,
+      password: 'Password1',
+    })
+
+    return response.body.token
+  }
+
+  test('U10: logout destroys the session so the token can no longer be used', async () => {
+    const token = await loginAndGetToken()
+    expect(verifySessionToken(token)).not.toBeNull()
+
+    const response = await request(app)
+      .post('/logout')
+      .set('Authorization', `Bearer ${token}`)
+
+    expect(response.status).toBe(200)
+    expect(response.body.message).toMatch(/logged out/i)
+    expect(verifySessionToken(token)).toBeNull()
+
+    const repeat = await request(app)
+      .post('/logout')
+      .set('Authorization', `Bearer ${token}`)
+
+    expect(repeat.status).toBe(401)
+  })
+
+  test('logging out one session does not end another session', async () => {
+    const firstToken = await loginAndGetToken()
+    const secondToken = await loginAndGetToken()
+
+    await request(app).post('/logout').set('Authorization', `Bearer ${firstToken}`)
+
+    expect(verifySessionToken(firstToken)).toBeNull()
+    expect(verifySessionToken(secondToken)).not.toBeNull()
+  })
+
+  test('rejects logout without a valid session token', async () => {
+    const missing = await request(app).post('/logout')
+    const invalid = await request(app)
+      .post('/logout')
+      .set('Authorization', 'Bearer not-a-real-token')
+
+    expect(missing.status).toBe(401)
+    expect(invalid.status).toBe(401)
   })
 })
