@@ -144,6 +144,9 @@
 .forgot-link {
   display: inline-block;
   width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
   text-align: center;
   margin-top: 6px;
   margin-bottom: 18px;
@@ -151,6 +154,63 @@
   font-size: 1.1rem;
   font-weight: 700;
   text-decoration: none;
+  cursor: pointer;
+}
+
+.reset-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(35, 39, 67, 0.55);
+}
+
+.reset-modal {
+  position: relative;
+  width: min(100%, 440px);
+  box-sizing: border-box;
+  padding: 32px;
+  border: 1px solid rgba(236, 149, 179, 0.55);
+  border-radius: 24px;
+  background: #f7eef2;
+  box-shadow: 0 18px 48px rgba(25, 29, 54, 0.28);
+}
+
+.reset-modal h2 {
+  margin: 0;
+  color: #2d365e;
+  font-size: 1.8rem;
+  text-align: center;
+}
+
+.reset-modal > p {
+  color: #4a4c74;
+  text-align: center;
+}
+
+.reset-modal form {
+  margin-top: 24px;
+}
+
+.reset-modal-close {
+  position: absolute;
+  top: 10px;
+  right: 14px;
+  width: 36px;
+  height: 36px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: #4a4c74;
+  font-size: 1.8rem;
+  cursor: pointer;
+}
+
+.reset-modal .primary-btn:disabled {
+  cursor: wait;
+  opacity: 0.7;
 }
 
 .primary-btn,

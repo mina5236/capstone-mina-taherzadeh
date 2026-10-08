@@ -1,4 +1,4 @@
-import { useState } from 'react'
+﻿import { useState } from 'react'
 import './LoginPage.css'
 
 const initialLogin = {
@@ -6,11 +6,18 @@ const initialLogin = {
   password: '',
 }
 
-function LoginPage({ onLoginSuccess, onCreateAccount }) {
+function LoginPage({ onLoginSuccess, onCreateAccount, resetToken, onResetTokenCleared }) {
   const [login, setLogin] = useState(initialLogin)
   const [showLoginPassword, setShowLoginPassword] = useState(false)
   const [message, setMessage] = useState('')
   const [messageType, setMessageType] = useState('')
+  const [showResetModal, setShowResetModal] = useState(Boolean(resetToken))
+  const [resetEmail, setResetEmail] = useState('')
+  const [newPassword, setNewPassword] = useState('')
+  const [confirmNewPassword, setConfirmNewPassword] = useState('')
+  const [resetMessage, setResetMessage] = useState('')
+  const [resetMessageType, setResetMessageType] = useState('')
+  const [resetSubmitting, setResetSubmitting] = useState(false)
 
   const handleLoginChange = (event) => {
     const { name, value } = event.target
@@ -48,6 +55,64 @@ function LoginPage({ onLoginSuccess, onCreateAccount }) {
       setMessageType('error')
       setMessage(error.message)
     }
+  }
+
+  const closeResetModal = () => {
+    setShowResetModal(false)
+    if (resetToken) onResetTokenCleared?.()
+  }
+
+  const handleResetSubmit = async (event) => {
+    event.preventDefault()
+    setResetMessage('')
+    setResetMessageType('')
+
+    if (resetToken && newPassword !== confirmNewPassword) {
+      setResetMessageType('error')
+      setResetMessage('Passwords do not match.')
+      return
+    }
+
+    setResetSubmitting(true)
+
+    try {
+      const response = await fetch(
+        `http://localhost:3001/api/password-reset/${resetToken ? 'confirm' : 'request'}`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(
+            resetToken
+              ? { token: resetToken, password: newPassword }
+              : { email: resetEmail },
+          ),
+        },
+      )
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Unable to request a password reset.')
+      }
+
+      setResetMessageType('success')
+      setResetMessage(data.message)
+      if (resetToken) {
+        setNewPassword('')
+        setConfirmNewPassword('')
+      }
+    } catch (error) {
+      setResetMessageType('error')
+      setResetMessage(error.message)
+    } finally {
+      setResetSubmitting(false)
+    }
+  }
+
+  const openResetModal = () => {
+    setResetEmail(login.email)
+    setResetMessage('')
+    setResetMessageType('')
+    setShowResetModal(true)
   }
 
   return (
@@ -111,9 +176,9 @@ function LoginPage({ onLoginSuccess, onCreateAccount }) {
 
             {message && <p className={`form-message ${messageType}`}>{message}</p>}
 
-            <a href="#" className="forgot-link">
+            <button type="button" className="forgot-link" onClick={openResetModal}>
               Forgot password? 😬
-            </a>
+            </button>
 
             <button type="submit" className="primary-btn">
               Sign In 🎉
@@ -134,6 +199,107 @@ function LoginPage({ onLoginSuccess, onCreateAccount }) {
           </span>
         </footer>
       </section>
+      {showResetModal && (
+        <div
+          className="reset-modal-backdrop"
+          onKeyDown={(event) => {
+            if (event.key === 'Escape') closeResetModal()
+          }}
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) closeResetModal()
+          }}
+        >
+          <section
+            className="reset-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="reset-modal-title"
+          >
+            <button
+              type="button"
+              className="reset-modal-close"
+              aria-label="Close password reset"
+              onClick={closeResetModal}
+            >
+              ×
+            </button>
+            <h2 id="reset-modal-title">{resetToken ? 'Reset Password' : 'Forgot Password?'}</h2>
+            <p>
+              {resetToken
+                ? 'Choose a new password for your account.'
+                : 'Enter your account email and we’ll send you a secure reset link.'}
+            </p>
+            <form onSubmit={handleResetSubmit}>
+              {!resetToken && (
+                <label className="field-group" htmlFor="resetEmail">
+                  <span className="field-label">✉️ Email</span>
+                  <div className="input-shell">
+                    <input
+                      id="resetEmail"
+                      type="email"
+                      value={resetEmail}
+                      onChange={(event) => setResetEmail(event.target.value)}
+                      placeholder="Enter your account email"
+                      autoComplete="email"
+                      aria-label="Email to reset"
+                      autoFocus
+                      required
+                    />
+                  </div>
+                </label>
+              )}
+              {resetToken && (
+                <>
+                  <label className="field-group" htmlFor="newPassword">
+                    <span className="field-label">🔒 New Password</span>
+                    <div className="input-shell">
+                      <input
+                        id="newPassword"
+                        type="password"
+                        value={newPassword}
+                        onChange={(event) => setNewPassword(event.target.value)}
+                        placeholder="Create a new password"
+                        minLength="8"
+                        pattern="(?=.*[A-Z])(?=.*[a-z])(?=.*\d).{8,}"
+                        title="Password must be at least 8 characters and include an uppercase letter, a lowercase letter, and a number."
+                        aria-label="New password"
+                        autoFocus
+                        required
+                      />
+                    </div>
+                  </label>
+                  <label className="field-group" htmlFor="confirmNewPassword">
+                    <span className="field-label">🔐 Confirm New Password</span>
+                    <div className="input-shell">
+                      <input
+                        id="confirmNewPassword"
+                        type="password"
+                        value={confirmNewPassword}
+                        onChange={(event) => setConfirmNewPassword(event.target.value)}
+                        placeholder="Re-enter new password"
+                        aria-label="Confirm new password"
+                        required
+                      />
+                    </div>
+                  </label>
+                </>
+              )}
+              {resetMessage && (
+                <p className={`form-message ${resetMessageType}`} role="status">
+                  {resetMessage}
+                </p>
+              )}
+              <button type="submit" className="primary-btn" disabled={resetSubmitting}>
+                {resetSubmitting
+                  ? 'Sending…'
+                  : resetToken
+                    ? 'Update Password'
+                    : 'Send Reset Link'}
+              </button>
+            </form>
+          </section>
+        </div>
+      )}
     </main>
   )
 }

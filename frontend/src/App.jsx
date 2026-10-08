@@ -1,4 +1,4 @@
-import { useState } from 'react'
+﻿import { useState } from 'react'
 import LoginPage from './LoginPage'
 import SignUpPage from './SignUpPage'
 import DashboardPage from './DashboardPage'
@@ -6,6 +6,7 @@ import ProfilePage from './ProfilePage'
 
 function App() {
   const [currentUser, setCurrentUser] = useState(null)
+  const resetToken = new URLSearchParams(window.location.search).get('resetToken')
   const [view, setView] = useState('dashboard')
 
   const handleLoginSuccess = (user) => {
@@ -16,6 +17,10 @@ function App() {
   const handleLogout = () => {
     setCurrentUser(null)
     setView('dashboard')
+  }
+
+  const clearResetToken = () => {
+    window.history.replaceState({}, '', window.location.pathname)
   }
 
   if (currentUser) {
@@ -34,6 +39,8 @@ function App() {
     <LoginPage
       onLoginSuccess={handleLoginSuccess}
       onCreateAccount={() => setView('signup')}
+      resetToken={resetToken}
+      onResetTokenCleared={clearResetToken}
     />
   )
 }
