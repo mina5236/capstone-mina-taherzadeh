@@ -1,10 +1,11 @@
 const express = require('express')
 const users = require('../data/users')
+const { requireSelf } = require('../utils/requireSelf')
 
 const router = express.Router()
 
 // Mirrors frontend/src/DashboardPage.jsx - new accounts start with no data.
-router.get('/dashboard/:userId', (req, res) => {
+router.get('/dashboard/:userId',requireSelf, (req, res) => {
   const userId = Number(req.params.userId)
   const user = users.findById(userId)
 
