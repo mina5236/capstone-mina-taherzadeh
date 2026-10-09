@@ -1,5 +1,6 @@
 const express = require('express')
 const users = require('../data/users')
+const registrations = require('../data/registrations')
 const { hashPassword, isValidPassword } = require('../utils/password')
 const { isValidEmail, isValidFullName } = require('../utils/validators')
 
@@ -29,7 +30,7 @@ router.get('/profile/:userId', (req, res) => {
   return res.status(200).json({
     user: toPublicProfile(user),
     clubs: [],
-    events: [],
+    events: registrations.findEventsByUser(userId),
     points: 0
   })
 })
