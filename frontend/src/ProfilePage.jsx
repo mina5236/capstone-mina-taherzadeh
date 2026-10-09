@@ -28,6 +28,11 @@ function ProfilePage({ user, onBack, onLogout }) {
         })
         const data = await response.json()
 
+        if (response.status === 401) {
+          onLogout()
+          return
+        }
+
         if (!response.ok) {
           throw new Error(data.message || 'Failed to load profile.')
         }
@@ -75,6 +80,11 @@ function ProfilePage({ user, onBack, onLogout }) {
       })
 
       const data = await response.json()
+
+      if (response.status === 401) {
+          onLogout()
+          return
+        }
 
       if (!response.ok) {
         throw new Error(data.message || 'Failed to update profile.')
