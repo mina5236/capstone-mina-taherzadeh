@@ -1,6 +1,7 @@
 const express = require('express')
 const users = require('../data/users')
 const registrations = require('../data/registrations')
+const { requireSelf } = require('../utils/requireSelf')
 const { hashPassword, isValidPassword } = require('../utils/password')
 const { isValidEmail, isValidFullName } = require('../utils/validators')
 
@@ -18,7 +19,7 @@ function toPublicProfile(user) {
 }
 
 // Mirrors frontend/src/ProfilePage.jsx
-router.get('/profile/:userId', (req, res) => {
+router.get('/profile/:userId', requireSelf, (req, res) => {
   const userId = Number(req.params.userId)
   const user = users.findById(userId)
 
@@ -35,7 +36,7 @@ router.get('/profile/:userId', (req, res) => {
   })
 })
 
-router.put('/profile/:userId', (req, res) => {
+router.put('/profile/:userId', requireSelf, (req, res) => {
   const userId = Number(req.params.userId)
   const user = users.findById(userId)
 
