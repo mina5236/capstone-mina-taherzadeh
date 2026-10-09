@@ -8,7 +8,7 @@ function formatMemberSince(createdAt) {
   return date.toLocaleDateString(undefined, { month: 'long', year: 'numeric' })
 }
 
-function ProfilePage({ user, onBack, onLogout }) {
+function ProfilePage({ user, onBack, onLogout , onProfileUpdated }) {
   const [profile, setProfile] = useState(null)
   const [clubs, setClubs] = useState([])
   const [events, setEvents] = useState([])
@@ -91,6 +91,7 @@ function ProfilePage({ user, onBack, onLogout }) {
       }
 
       setProfile(data.user)
+      onProfileUpdated?.(data.user)
       setForm((prev) => ({ ...prev, password: '' }))
       setFormMessageType('success')
       setFormMessage('Profile updated successfully!')
