@@ -33,13 +33,17 @@ function App() {
     setView('dashboard')
   }
 
+  const handleProfileUpdated = (updatedUser) => {
+    setCurrentUser((prev) => ({ ...prev, ...updatedUser }))
+  }
+
   const clearResetToken = () => {
     window.history.replaceState({}, '', window.location.pathname)
   }
 
   if (currentUser) {
     if (view === 'profile') {
-      return <ProfilePage user={currentUser} onBack={() => setView('dashboard')} onLogout={handleLogout} />
+      return <ProfilePage user={currentUser} onBack={() => setView('dashboard')} onLogout={handleLogout} onProfileUpdated={handleProfileUpdated}/>
     }
 
     return <DashboardPage user={currentUser} onLogout={handleLogout} onNavigate={setView} />
