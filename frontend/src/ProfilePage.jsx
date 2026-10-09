@@ -187,14 +187,11 @@ function ProfilePage({ user, onBack, onLogout , onProfileUpdated }) {
         </section>
 
         <section className="profile-card">
-          <div className="profile-card-heading">
-            <h2>🎉 My Events</h2>
-            <a href="#" className="profile-view-all">View All →</a>
-          </div>
+          <h2>🎉 My Events</h2>
           {events.length === 0 ? (
             <div className="profile-empty-state">
               <span aria-hidden="true">🎉</span>
-              <p>No upcoming events</p>
+              <p>You haven't registered for any events yet</p>
             </div>
           ) : (
             events.map((event) => (
@@ -203,6 +200,7 @@ function ProfilePage({ user, onBack, onLogout , onProfileUpdated }) {
                 <div>
                   <p className="profile-info-value">{event.title}</p>
                   <p className="profile-info-label">📅 {event.date}</p>
+                  <p className="profile-info-label">🏛️ {event.clubName} · 📍 {event.location}</p>
                 </div>
               </div>
             ))
