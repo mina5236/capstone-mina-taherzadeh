@@ -23,7 +23,9 @@ function ProfilePage({ user, onBack, onLogout }) {
   useEffect(() => {
     const loadProfile = async () => {
       try {
-        const response = await fetch(`http://localhost:3001/api/profile/${user.id}`)
+        const response = await fetch(`http://localhost:3001/api/profile/${user.id}` , {
+          headers: { Authorization: `Bearer ${user.sessionToken}` }
+        })
         const data = await response.json()
 
         if (!response.ok) {
@@ -67,7 +69,8 @@ function ProfilePage({ user, onBack, onLogout }) {
     try {
       const response = await fetch(`http://localhost:3001/api/profile/${user.id}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json' , 
+           Authorization: `Bearer ${user.sessionToken}`},
         body: JSON.stringify(payload)
       })
 
