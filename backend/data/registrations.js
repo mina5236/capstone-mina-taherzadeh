@@ -21,4 +21,44 @@ function findEventsByUser(userId) {
   }))
 }
 
-module.exports = { findEventsByUser }
+// A transaction keeps the registration row and current_count in sync,
+// and stops two requests from filling the last seat at the same time.
+const registerUser = db.transaction((userId, eventId) => {
+  const event = db
+    .prepare(
+      `SELECT e.max_capacity, e.current_count
+       FROM events e
+       JOIN clubs c ON c.club_id = e.club_id
+       WHERE e.event_id = ? AND c.status = 'approved'`
+    )
+    .get(eventId)
+
+  if (!event) return { error: 'NOT_FOUND' }
+
+  const existing = db
+    .prepare('SELECT 1 FROM event_registrations WHERE user_id = ? AND event_id = ?')
+    .get(userId, eventId)
+
+  if (existing) return { error: 'ALREADY_REGISTERED' }
+  if (event.current_count >= event.max_capacity) return { error: 'FULL' }
+
+  db.prepare('INSERT INTO event_registrations (user_id, event_id) VALUES (?, ?)').run(userId, eventId)
+  db.prepare('UPDATE events SET current_count = current_count + 1 WHERE event_id = ?').run(eventId)
+
+  return { ok: true }
+})
+
+const cancelRegistration = db.transaction((userId, eventId) => {
+  const result = db
+    .prepare('DELETE FROM event_registrations WHERE user_id = ? AND event_id = ?')
+    .run(userId, eventId)
+
+  if (result.changes === 0) return { error: 'NOT_REGISTERED' }
+
+  db.prepare('UPDATE events SET current_count = MAX(current_count - 1, 0) WHERE event_id = ?').run(eventId)
+
+  return { ok: true }
+})
+
+
+module.exports = { findEventsByUser , registerUser, cancelRegistration  }
