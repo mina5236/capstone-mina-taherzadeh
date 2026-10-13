@@ -115,7 +115,10 @@ function DashboardPage({ user, onLogout, onNavigate }) {
         <section className="dashboard-section">
           <div className="section-heading">
             <h2>🎪 Upcoming Events</h2>
-            <a href="#" className="section-link">View All →</a>
+            <a href="#" className="section-link" onClick={(event) => {
+                event.preventDefault()
+                onNavigate('events')
+              }}>View All →</a>
           </div>
 
           {upcomingEvents.length === 0 ? (
