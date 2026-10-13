@@ -3,6 +3,7 @@ import LoginPage from './LoginPage'
 import SignUpPage from './SignUpPage'
 import DashboardPage from './DashboardPage'
 import ProfilePage from './ProfilePage'
+import EventsPage from './EventsPage'
 
 function App() {
   const [currentUser, setCurrentUser] = useState(null)
@@ -44,6 +45,10 @@ function App() {
   if (currentUser) {
     if (view === 'profile') {
       return <ProfilePage user={currentUser} onBack={() => setView('dashboard')} onLogout={handleLogout} onProfileUpdated={handleProfileUpdated}/>
+    }
+
+    if (view === 'events') {
+      return <EventsPage user={currentUser} onBack={() => setView('dashboard')} onLogout={handleLogout} />
     }
 
     return <DashboardPage user={currentUser} onLogout={handleLogout} onNavigate={setView} />
