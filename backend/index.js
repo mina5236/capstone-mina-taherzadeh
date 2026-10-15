@@ -6,7 +6,7 @@ const loginRoutes = require('./routes/loginRoutes')
 const dashboardRoutes = require('./routes/dashboardRoutes')
 const profileRoutes = require('./routes/profileRoutes')
 const passwordResetRoutes = require('./routes/passwordResetRoutes')
-const eventRoutes = require('./routes/eventRoutes')
+const eventRoutes = require('./routes/eventsRoutes')
 
 const app = express()
 const PORT = process.env.PORT || 3001
