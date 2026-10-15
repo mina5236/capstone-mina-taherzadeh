@@ -12,6 +12,8 @@ function ProfilePage({ user, onBack, onLogout , onProfileUpdated }) {
   const [profile, setProfile] = useState(null)
   const [clubs, setClubs] = useState([])
   const [events, setEvents] = useState([])
+  const [cancellingId, setCancellingId] = useState(null)
+  const [eventMessage, setEventMessage] = useState({ text: '', type: '' })
   const [points, setPoints] = useState(0)
   const [error, setError] = useState('')
 
@@ -101,6 +103,37 @@ function ProfilePage({ user, onBack, onLogout , onProfileUpdated }) {
     }
   }
 
+  const handleCancelRegistration = async (eventId) => {
+  if (cancellingId !== null) return
+
+  setCancellingId(eventId)
+  setEventMessage({ text: '', type: '' })
+
+  try {
+    const response = await fetch(`http://localhost:3001/api/events/${eventId}/register`, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${user.sessionToken}` }
+    })
+    const data = await response.json()
+
+    if (response.status === 401) {
+      onLogout()
+      return
+    }
+
+    if (!response.ok) {
+      throw new Error(data.message || 'Failed to cancel registration.')
+    }
+
+    setEvents((prev) => prev.filter((item) => item.id !== eventId))
+    setEventMessage({ text: data.message, type: 'success' })
+  } catch (err) {
+    setEventMessage({ text: err.message, type: 'error' })
+  } finally {
+    setCancellingId(null)
+  }
+}
+
   if (error) {
     return (
       <main className="profile-shell">
@@ -188,6 +221,7 @@ function ProfilePage({ user, onBack, onLogout , onProfileUpdated }) {
 
         <section className="profile-card">
           <h2>🎉 My Events</h2>
+          {eventMessage.text && <p className={`form-message ${eventMessage.type}`}>{eventMessage.text}</p>}
           {events.length === 0 ? (
             <div className="profile-empty-state">
               <span aria-hidden="true">🎉</span>
@@ -202,6 +236,13 @@ function ProfilePage({ user, onBack, onLogout , onProfileUpdated }) {
                   <p className="profile-info-label">📅 {event.date}</p>
                   <p className="profile-info-label">🏛️ {event.clubName} · 📍 {event.location}</p>
                 </div>
+                <button
+                  type="button"
+                  className="secondary-btn"
+                  disabled={cancellingId === event.id}
+                  onClick={() => handleCancelRegistration(event.id)}>
+                  {cancellingId === event.id ? 'Cancelling...' : 'Cancel'}
+                </button>
               </div>
             ))
           )}
