@@ -278,6 +278,13 @@
   font-weight: 700;
 }
 
+.event-card {
+  background: #fff;
+  border-radius: 20px;
+  padding: 16px 18px;
+}
+.event-card p { margin: 4px 0 0; color: #7a7f9c; font-size: 0.9rem; }
+
 @media (max-width: 640px) {
   .dashboard-header {
     padding: 14px 18px;

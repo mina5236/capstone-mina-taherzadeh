@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import './DashboardPage.css'
 
 function EmptyStateCard({ icon, text }) {
@@ -10,16 +10,30 @@ function EmptyStateCard({ icon, text }) {
   )
 }
 
+
+const API = 'http://localhost:3001/api'
+
 function DashboardPage({ user, onLogout, onNavigate }) {
-  // New accounts start with no joined events, no followed clubs, and no active hours yet.
-  const upcomingEvents = []
+  const [events, setEvents] = useState([])
+  const [showRegistered, setShowRegistered] = useState(false)
+
+  useEffect(() => {
+    fetch(`${API}/events`, { headers: { Authorization: `Bearer ${user.sessionToken}` } })
+      .then((res) => {
+        if (res.status === 401) onLogout()
+        return res.ok ? res.json() : { events: [] }
+      })
+      .then((data) => setEvents(data.events))
+      .catch(() => {})
+  }, [user.id])
+
+  const upcomingEvents = events
+    .filter((item) => new Date(item.date.replace(' ', 'T')) >= new Date())
+    .slice(0, 4)
+  const registeredEvents = events.filter((item) => item.isRegistered)
   const popularClubs = []
   const notifications = []
-  const stats = {
-    eventsJoined: 0,
-    clubsFollowed: 0,
-    hoursActive: 0,
-  }
+  const stats = { eventsJoined: registeredEvents.length, clubsFollowed: 0, hoursActive: 0 }
 
   const [openMenu, setOpenMenu] = useState(null)
 
@@ -127,7 +141,9 @@ function DashboardPage({ user, onLogout, onNavigate }) {
             <div className="events-grid">
               {upcomingEvents.map((event) => (
                 <div className="event-card" key={event.id}>
-                  {event.title}
+                  <strong>{event.title}</strong>
+                  <p>📅 {event.date}</p>
+                  <p>🏛️ {event.clubName} · 📍 {event.location}</p>
                 </div>
               ))}
             </div>
