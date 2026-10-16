@@ -176,7 +176,7 @@ function DashboardPage({ user, onLogout, onNavigate }) {
             <button type="button" className="dropdown-item" onClick={() => onNavigate('profile')}>
               👤 My Profile &amp; Settings
             </button>
-            <button type="button" className="dropdown-item">
+            <button type="button" className="dropdown-item"  onClick={() => { setOpenMenu(null); setShowRegistered(true)}}>
               🎉 My Registered Events
             </button>
             <button type="button" className="dropdown-item">
