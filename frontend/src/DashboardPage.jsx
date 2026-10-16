@@ -15,7 +15,6 @@ const API = 'http://localhost:3001/api'
 
 function DashboardPage({ user, onLogout, onNavigate }) {
   const [events, setEvents] = useState([])
-  const [showRegistered, setShowRegistered] = useState(false)
 
   useEffect(() => {
     fetch(`${API}/events`, { headers: { Authorization: `Bearer ${user.sessionToken}` } })
@@ -176,7 +175,7 @@ function DashboardPage({ user, onLogout, onNavigate }) {
             <button type="button" className="dropdown-item" onClick={() => onNavigate('profile')}>
               👤 My Profile &amp; Settings
             </button>
-            <button type="button" className="dropdown-item"  onClick={() => { setOpenMenu(null); setShowRegistered(true)}}>
+            <button type="button" className="dropdown-item" onClick={() => onNavigate('myEvents')}>
               🎉 My Registered Events
             </button>
             <button type="button" className="dropdown-item">
