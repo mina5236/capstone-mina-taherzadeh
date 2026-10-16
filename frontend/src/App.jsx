@@ -4,7 +4,7 @@ import SignUpPage from './SignUpPage'
 import DashboardPage from './DashboardPage'
 import ProfilePage from './ProfilePage'
 import EventsPage from './EventsPage'
-import MyEventsPage from './myEventsPage'
+import MyEventsPage from './MyEventsPage'
 
 function App() {
   const [currentUser, setCurrentUser] = useState(null)
