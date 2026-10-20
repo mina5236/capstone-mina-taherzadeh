@@ -5,6 +5,7 @@ import DashboardPage from './DashboardPage'
 import ProfilePage from './ProfilePage'
 import EventsPage from './EventsPage'
 import MyEventsPage from './MyEventsPage'
+import ClubRequestPage from './ClubRequestPage'
 
 function App() {
   const [currentUser, setCurrentUser] = useState(null)
@@ -53,15 +54,12 @@ function App() {
     }
 
     if (view === 'myEvents') {
-    return (
-      <MyEventsPage
-        user={currentUser}
-        onBack={() => setView('dashboard')}
-        onBrowse={() => setView('events')}
-        onLogout={handleLogout}
-      />
-    )
-}
+    return <MyEventsPage user={currentUser} onBack={() => setView('dashboard')} onBrowse={() => setView('events')} onLogout={handleLogout}/>
+    }
+    
+    if (view === 'clubRequest') {
+        return <ClubRequestPage user={currentUser} onBack={() => setView('dashboard')} onLogout={handleLogout} />
+      }
 
     return <DashboardPage user={currentUser} onLogout={handleLogout} onNavigate={setView} />
   }
