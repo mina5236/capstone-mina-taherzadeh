@@ -7,6 +7,7 @@ const dashboardRoutes = require('./routes/dashboardRoutes')
 const profileRoutes = require('./routes/profileRoutes')
 const passwordResetRoutes = require('./routes/passwordResetRoutes')
 const eventRoutes = require('./routes/eventsRoutes')
+const clubRequestRoutes = require('./routes/clubRequestsRoutes')
 
 const app = express()
 const PORT = process.env.PORT || 3001
@@ -32,7 +33,7 @@ app.use('/api', dashboardRoutes)
 app.use('/api', profileRoutes)
 app.use('/api', passwordResetRoutes)
 app.use('/api', eventRoutes)
-
+app.use('/api', clubRequestRoutes)
 app.get('/api/health', (req, res) => {
   res.status(200).json({ status: 'OK' })
 })
