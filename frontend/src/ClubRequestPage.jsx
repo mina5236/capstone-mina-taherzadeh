@@ -121,9 +121,13 @@ function ClubRequestPage({ user, onBack, onLogout }) {
           <h2>🎪 Club Details</h2>
 
           {hasPending ? (
-            <p className="form-message error">
-              You already have a request waiting for review. You can submit another one after it is reviewed.
-            </p>
+            message.type === 'success' ? (
+              <p className="form-message success">{message.text}</p>
+            ) : (
+              <p className="request-note">
+                You already have a request waiting for review. You can submit another one after it is reviewed.
+              </p>
+            )
           ) : (
             <form className="profile-settings-form" onSubmit={handleSubmit}>
               <label className="field-group" htmlFor="requesterName">
@@ -176,7 +180,6 @@ function ClubRequestPage({ user, onBack, onLogout }) {
             </form>
           )}
 
-          {hasPending && message.text && <p className={`form-message ${message.type}`}>{message.text}</p>}
         </section>
 
         <section className="profile-card">
