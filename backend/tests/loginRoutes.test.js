@@ -31,7 +31,7 @@ describe('POST /login', () => {
     users.findByEmail.mockReturnValue(existingUser)
   })
 
-  test('U9: accepts valid credentials and returns an expiring session token', async () => {
+  test('U9 + A2: accepts valid credentials and returns an expiring session token', async () => {
     const response = await request(app).post('/login').send({
       email: 'Mina.Taherzadeh@test.com',
       password: 'Password1',
@@ -93,7 +93,7 @@ describe('POST /logout', () => {
     return response.body.token
   }
 
-  test('U10: logout destroys the session so the token can no longer be used', async () => {
+  test('U10 + A3: logout destroys the session so the token can no longer be used', async () => {
     const token = await loginAndGetToken()
     expect(verifySessionToken(token)).not.toBeNull()
 

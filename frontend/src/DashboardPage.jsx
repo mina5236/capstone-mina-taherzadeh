@@ -22,7 +22,7 @@ function DashboardPage({ user, onLogout, onNavigate }) {
         if (res.status === 401) onLogout()
         return res.ok ? res.json() : { events: [] }
       })
-      .then((data) => setEvents(data.events))
+      .then((data) => setEvents(data.events || []))
       .catch(() => {})
   }, [user.id])
 

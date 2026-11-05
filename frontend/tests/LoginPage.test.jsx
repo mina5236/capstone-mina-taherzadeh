@@ -12,7 +12,7 @@ describe('LoginPage', () => {
     jest.resetAllMocks()
   })
 
-  test('U9: submits credentials, displays the welcome message, and calls onLoginSuccess', async () => {
+  test('submits credentials, displays the welcome message, and calls onLoginSuccess', async () => {
     const user = userEvent.setup()
     const authenticatedUser = {
       id: 12,
@@ -141,12 +141,11 @@ describe('App login flow', () => {
 
   test('F1: login with correct credentials opens the dashboard', async () => {
     const user = userEvent.setup()
-    global.fetch.mockResolvedValue({
-      ok: true,
-      json: async () => ({
-        user: { id: 1, fullName: 'Test User', email: 'test@test.com', studentId: '12345678' },
-        token: 'signed-session-token',
-      }),
+    global.fetch.mockImplementation((url) => {
+      const body = String(url).endsWith('/login')
+        ? { user: { id: 1, fullName: 'Test User', email: 'test@test.com', studentId: '12345678' }, token: 'signed-session-token' }
+        : { events: [] }
+      return Promise.resolve({ ok: true, status: 200, json: async () => body })
     })
     render(<App />)
 

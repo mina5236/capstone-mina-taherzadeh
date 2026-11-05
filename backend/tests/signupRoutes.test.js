@@ -27,7 +27,7 @@ describe('POST /signup', () => {
     users.insertUser.mockImplementation((user) => ({ id: 1, ...user }))
   })
 
-  test('U1: accepts a correctly formatted email', async () => {
+  test('U1 + A1: accepts a correctly formatted email (HTTP 201)', async () => {
     const response = await request(app).post('/signup').send(validSignup)
 
     expect(response.status).toBe(201)

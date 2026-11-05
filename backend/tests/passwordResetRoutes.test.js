@@ -35,7 +35,7 @@ describe('password reset routes', () => {
     users.updatePasswordIfUnchanged.mockReturnValue(true)
   })
 
-  test('U11: sends a reset link to an existing email without returning the token', async () => {
+  test('U11 + A4: sends a reset link to an existing email without returning the token', async () => {
     const response = await request(app)
       .post('/password-reset/request')
       .send({ email: 'Mina.Taherzadeh@test.com' })

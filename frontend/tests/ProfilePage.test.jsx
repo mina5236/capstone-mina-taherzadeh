@@ -2,7 +2,7 @@ import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import ProfilePage from '../src/ProfilePage'
 
-const signedInUser = { id: 12 }
+const signedInUser = { id: 12, sessionToken: 'signed-session-token' }
 
 const profileResponse = {
   ok: true,
@@ -34,7 +34,7 @@ describe('ProfilePage', () => {
     render(<ProfilePage user={signedInUser} />)
 
     expect(await screen.findByRole('heading', { name: 'Mina Taherzadeh' })).toBeInTheDocument()
-    expect(global.fetch).toHaveBeenCalledWith('http://localhost:3001/api/profile/12')
+    expect(global.fetch).toHaveBeenCalledWith('http://localhost:3001/api/profile/12',expect.objectContaining({ headers: { Authorization: 'Bearer signed-session-token' } }),)
     expect(screen.getByText(/00092277/)).toBeInTheDocument()
     expect(screen.getByText('mina.taherzadeh@test.com')).toBeInTheDocument()
     expect(screen.getByText('Member Since')).toBeInTheDocument()
