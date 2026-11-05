@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import './ProfilePage.css'
 import { API } from './config.js'
 
+//Loads /events and keeps only isRegistered ones
 function MyEventsPage({ user, onBack, onBrowse, onLogout }) {
   const [events, setEvents] = useState([])
   const [loading, setLoading] = useState(true)
@@ -21,6 +22,7 @@ function MyEventsPage({ user, onBack, onBrowse, onLogout }) {
       .finally(() => setLoading(false))
   }, [user.id])
 
+  //Sends DELETE, removes the event from the list, shows the confirmation
   const cancel = async (eventId) => {
     if (cancellingId !== null) return
 

@@ -8,6 +8,7 @@ function formatMemberSince(createdAt) {
   return date.toLocaleDateString(undefined, { month: 'long', year: 'numeric' })
 }
 
+//Holds profile, clubs, events, points, the edit form, and messages
 function ProfilePage({ user, onBack, onLogout , onProfileUpdated }) {
   const [profile, setProfile] = useState(null)
   const [clubs, setClubs] = useState([])

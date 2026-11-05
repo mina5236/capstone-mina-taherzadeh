@@ -3,6 +3,7 @@ import './ProfilePage.css'
 import './ClubRequestPage.css'
 import { API } from './config.js'
 
+//Fetches pending requests. A 403 or error shows the error screen with a back button
 function AdminClubRequestsPage({ user, onBack, onLogout }) {
   const [requests, setRequests] = useState([])
   const [loading, setLoading] = useState(true)

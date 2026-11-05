@@ -13,6 +13,7 @@ function EventsPage({ user, onBack, onLogout }) {
   const authHeaders = { Authorization: `Bearer ${user.sessionToken}` }
 
   useEffect(() => {
+    //Loads all events
     const loadEvents = async () => {
       try {
         const response = await fetch(`${API}/events`, { headers: authHeaders })
@@ -38,10 +39,12 @@ function EventsPage({ user, onBack, onLogout }) {
     loadEvents()
   }, [user.id])
 
+  //Replaces one event in the list with the fresh copy from the server
   const updateEvent = (updated) => {
     setEvents((prev) => prev.map((item) => (item.id === updated.id ? updated : item)))
   }
 
+  //Sends POST (register) or DELETE (cancel)
   const changeRegistration = async (eventId, method) => {
     if (submitting) return
 
