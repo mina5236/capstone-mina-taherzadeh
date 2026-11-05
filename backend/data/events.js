@@ -1,6 +1,6 @@
 const db = require('../db/connection')
 
-// Only events from approved clubs are shown to students.
+// Selects event fields, the club name, and whether this user is registered. Only events of approved clubs appear
 const SELECT_EVENT = `
   SELECT e.event_id, e.title, e.description, e.event_date, e.location,
          e.max_capacity, e.current_count, c.club_name,
@@ -13,6 +13,7 @@ const SELECT_EVENT = `
   WHERE c.status = 'approved'
 `
 
+//Renames database columns to what the page uses (maxCapacity, currentCount, isRegistered)
 function toEvent(row) {
   if (!row) return null
 

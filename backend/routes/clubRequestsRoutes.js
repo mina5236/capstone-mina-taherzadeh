@@ -6,6 +6,7 @@ const { isValidEmail } = require('../utils/validators')
 
 const router = express.Router()
 
+//Trims the 4 fields and checks: name 3–60 characters, description 20–500, valid email, purpose 10–500
 function readRequestForm(body) {
   const clubName = String(body.clubName || '').trim()
   const description = String(body.description || '').trim()
@@ -67,6 +68,7 @@ router.get('/admin/club-requests', requireAdmin, (req, res) => {
   return res.status(200).json({ requests: clubRequests.listPending() })
 })
 
+//Turns results into 404, 409 already reviewed, 409 name taken, or 200
 function reviewResponse(res, result, successMessage) {
   if (result.error === 'NOT_FOUND') {
     return res.status(404).json({ message: 'Club request not found.' })
@@ -83,6 +85,7 @@ function reviewResponse(res, result, successMessage) {
   return res.status(200).json({ message: successMessage })
 }
 
+//approve the request 
 router.post('/admin/club-requests/:requestId/approve', requireAdmin, (req, res) => {
   const requestId = parseRequestId(req)
 
@@ -93,6 +96,7 @@ router.post('/admin/club-requests/:requestId/approve', requireAdmin, (req, res) 
   return reviewResponse(res, clubRequests.approveRequest(requestId), 'Club request approved. The club is now active.')
 })
 
+//reject request
 router.post('/admin/club-requests/:requestId/reject', requireAdmin, (req, res) => {
   const requestId = parseRequestId(req)
 

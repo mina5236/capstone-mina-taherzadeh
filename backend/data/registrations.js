@@ -1,5 +1,7 @@
 const db = require('../db/connection')
 
+//registration event for user
+//A transaction with these steps: 1) the event must exist and its club must be approved. 2) You must not already be registered (ALREADY_REGISTERED). 3) current_count >= max_capacity means FULL. 4) Insert the registration and add 1 to current_count
 function findEventsByUser(userId) {
   const rows = db
     .prepare(

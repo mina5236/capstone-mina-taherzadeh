@@ -10,10 +10,12 @@ function parseEventId(req) {
   return Number.isInteger(id) && id > 0 ? id : null
 }
 
+//Returns all events, with isRegistered for this user
 router.get('/events', requireAuth, (req, res) => {
   return res.status(200).json({ events: events.listEvents(req.userId) })
 })
 
+//Returns one event, or 404 - events list
 router.get('/events/:eventId', requireAuth, (req, res) => {
   const eventId = parseEventId(req)
   const event = eventId ? events.findEventById(eventId, req.userId) : null
@@ -25,6 +27,7 @@ router.get('/events/:eventId', requireAuth, (req, res) => {
   return res.status(200).json({ event })
 })
 
+//Calls registerUser. The answer is 404, 409 already registered, 409 full, or 201 with “You are registered for this event.” The latest event data always comes back
 router.post('/events/:eventId/register', requireAuth, (req, res) => {
   const eventId = parseEventId(req)
 
@@ -51,6 +54,7 @@ router.post('/events/:eventId/register', requireAuth, (req, res) => {
   return res.status(201).json({ message: 'You are registered for this event.', event })
 })
 
+//Calls cancelRegistration. The answer is 404 if you weren’t registered, or 200 “Your registration has been cancelled.”
 router.delete('/events/:eventId/register', requireAuth, (req, res) => {
   const eventId = parseEventId(req)
 

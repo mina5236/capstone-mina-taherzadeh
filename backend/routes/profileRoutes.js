@@ -7,6 +7,7 @@ const { isValidEmail, isValidFullName } = require('../utils/validators')
 
 const router = express.Router()
 
+//viewing profile Picks only safe fields (no password hash) - viewing profile
 function toPublicProfile(user) {
   return {
     id: user.id,
@@ -18,7 +19,7 @@ function toPublicProfile(user) {
   }
 }
 
-// Mirrors frontend/src/ProfilePage.jsx
+// viewing profile Guarded by requireSelf. Loads the user and returns user, clubs (empty for now), events, points
 router.get('/profile/:userId', requireSelf, (req, res) => {
   const userId = Number(req.params.userId)
   const user = users.findById(userId)
@@ -27,7 +28,6 @@ router.get('/profile/:userId', requireSelf, (req, res) => {
     return res.status(404).json({ message: 'User not found.' })
   }
 
-  // Clubs and Events tables don't exist yet, so a new account has none of either.
   return res.status(200).json({
     user: toPublicProfile(user),
     clubs: [],
@@ -36,6 +36,7 @@ router.get('/profile/:userId', requireSelf, (req, res) => {
   })
 })
 
+//(editing profile) name, email , password check - At least 2 characters, letters and spaces only, otherwise 400
 router.put('/profile/:userId', requireSelf, (req, res) => {
   const userId = Number(req.params.userId)
   const user = users.findById(userId)
@@ -80,6 +81,7 @@ router.put('/profile/:userId', requireSelf, (req, res) => {
     updates.passwordHash = hashPassword(password)
   }
 
+  //Saves only the fields that changed and returns the updated user
   const updatedUser = users.updateUser(userId, updates)
 
   return res.status(200).json({

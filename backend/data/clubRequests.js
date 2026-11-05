@@ -1,5 +1,6 @@
 const db = require('../db/connection')
 
+// Reads a request together with the requester’s name and student ID
 const SELECT_REQUEST = `
   SELECT r.request_id, r.user_id, r.proposed_club_name, r.club_description,
          r.contact_email, r.purpose_explanation, r.status, r.submitted_at,
@@ -29,6 +30,7 @@ function findById(requestId) {
   return toRequest(db.prepare(`${SELECT_REQUEST} WHERE r.request_id = ?`).get(requestId))
 }
 
+//user's requests
 function listByUser(userId) {
   return db
     .prepare(`${SELECT_REQUEST} WHERE r.user_id = ? ORDER BY r.submitted_at DESC, r.request_id DESC`)
@@ -36,6 +38,7 @@ function listByUser(userId) {
     .map(toRequest)
 }
 
+//user's pending requests
 function listPending() {
   return db
     .prepare(`${SELECT_REQUEST} WHERE r.status = 'pending' ORDER BY r.submitted_at, r.request_id`)
