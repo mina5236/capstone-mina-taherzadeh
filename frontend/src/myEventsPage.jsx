@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import './ProfilePage.css'
-
-const API = 'http://localhost:3001/api'
+import { API } from './config.js'
 
 function MyEventsPage({ user, onBack, onBrowse, onLogout }) {
   const [events, setEvents] = useState([])

@@ -1,5 +1,6 @@
 ﻿import { useState } from 'react'
 import './LoginPage.css'
+import { API } from './config.js'
 
 const initialLogin = {
   email: '',
@@ -30,7 +31,7 @@ function LoginPage({ onLoginSuccess, onCreateAccount, resetToken, onResetTokenCl
     setMessageType('')
 
     try {
-      const response = await fetch('http://localhost:3001/api/login', {
+      const response = await fetch(`${API}/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -77,7 +78,7 @@ function LoginPage({ onLoginSuccess, onCreateAccount, resetToken, onResetTokenCl
 
     try {
       const response = await fetch(
-        `http://localhost:3001/api/password-reset/${resetToken ? 'confirm' : 'request'}`,
+        `${API}/password-reset/${resetToken ? 'confirm' : 'request'}`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },

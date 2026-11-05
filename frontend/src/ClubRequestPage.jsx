@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react'
 import './ProfilePage.css'
 import './ClubRequestPage.css'
-
-const API = 'http://localhost:3001/api'
+import { API } from './config.js'
 
 function ClubRequestPage({ user, onBack, onLogout }) {
   const [form, setForm] = useState({

@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react'
 import './ProfilePage.css'
 import './ClubRequestPage.css'
-
-const API = 'http://localhost:3001/api'
+import { API } from './config.js'
 
 function AdminClubRequestsPage({ user, onBack, onLogout }) {
   const [requests, setRequests] = useState([])

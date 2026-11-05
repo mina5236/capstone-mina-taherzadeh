@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import './SignUpPage.css'
+import { API } from './config.js'
 
 const initialSignup = {
   fullName: '',
@@ -39,7 +40,7 @@ function SignUpPage({ onBackToLogin }) {
     }
 
     try {
-      const response = await fetch('http://localhost:3001/api/signup', {
+      const response = await fetch(`${API}/signup`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

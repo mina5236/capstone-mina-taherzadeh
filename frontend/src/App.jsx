@@ -7,6 +7,7 @@ import EventsPage from './EventsPage'
 import MyEventsPage from './MyEventsPage'
 import ClubRequestPage from './ClubRequestPage'
 import AdminClubRequestsPage from './AdminClubRequestsPage'
+import { API } from './config.js'
 
 function App() {
   const [currentUser, setCurrentUser] = useState(null)
@@ -23,7 +24,7 @@ function App() {
       // Best effort: the user is logged out locally even if this request fails.
       void (async () => {
         try {
-          await fetch('http://localhost:3001/api/logout', {
+          await fetch(`${API}/logout`, {
             method: 'POST',
             headers: { Authorization: `Bearer ${currentUser.sessionToken}` },
           })

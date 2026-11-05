@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import './DashboardPage.css'
+import { API } from './config.js'
 
 function EmptyStateCard({ icon, text }) {
   return (
@@ -9,9 +10,6 @@ function EmptyStateCard({ icon, text }) {
     </div>
   )
 }
-
-
-const API = 'http://localhost:3001/api'
 
 function DashboardPage({ user, onLogout, onNavigate }) {
   const [events, setEvents] = useState([])

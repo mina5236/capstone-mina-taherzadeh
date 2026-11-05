@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import './ProfilePage.css'
-
+import { API } from './config.js'
 function formatMemberSince(createdAt) {
   if (!createdAt) return 'Recently'
   const date = new Date(createdAt.replace(' ', 'T'))
@@ -25,7 +25,7 @@ function ProfilePage({ user, onBack, onLogout , onProfileUpdated }) {
   useEffect(() => {
     const loadProfile = async () => {
       try {
-        const response = await fetch(`http://localhost:3001/api/profile/${user.id}` , {
+        const response = await fetch(`${API}/profile/${user.id}` , {
           headers: { Authorization: `Bearer ${user.sessionToken}` }
         })
         const data = await response.json()
@@ -74,7 +74,7 @@ function ProfilePage({ user, onBack, onLogout , onProfileUpdated }) {
     }
 
     try {
-      const response = await fetch(`http://localhost:3001/api/profile/${user.id}`, {
+      const response = await fetch(`${API}/profile/${user.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' , 
            Authorization: `Bearer ${user.sessionToken}`},
@@ -110,7 +110,7 @@ function ProfilePage({ user, onBack, onLogout , onProfileUpdated }) {
   setEventMessage({ text: '', type: '' })
 
   try {
-    const response = await fetch(`http://localhost:3001/api/events/${eventId}/register`, {
+    const response = await fetch(`${API}/events/${eventId}/register`, {
       method: 'DELETE',
       headers: { Authorization: `Bearer ${user.sessionToken}` }
     })
