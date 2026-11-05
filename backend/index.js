@@ -38,6 +38,7 @@ app.get('/api/health', (req, res) => {
   res.status(200).json({ status: 'OK' })
 })
 
+require('./utils/seedAdmin').seedAdmin()
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`)
 })
