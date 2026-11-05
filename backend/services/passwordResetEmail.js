@@ -27,7 +27,7 @@ async function sendPasswordResetEmail(email, token) {
   }
 
   const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173'
-  const resetUrl = new URL('/', frontendUrl)
+  const resetUrl = new URL(frontendUrl)
   resetUrl.searchParams.set('resetToken', token)
 
   const response = await postWithRetry(BREVO_API_URL, {
