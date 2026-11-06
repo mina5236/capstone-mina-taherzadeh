@@ -64,6 +64,22 @@ function updatePasswordIfUnchanged(id, currentPasswordHash, newPasswordHash) {
   return result.changes === 1
 }
 
+// Admin tools: every account (the route removes password hashes before sending).
+function listAll() {
+  return db.prepare('SELECT * FROM users ORDER BY created_at DESC, user_id DESC').all().map(toUser)
+}
+
+// Admin tools: switch an account on or off.
+function setActive(id, isActive) {
+  db.prepare('UPDATE users SET is_active = ? WHERE user_id = ?').run(isActive ? 1 : 0, id)
+  return findById(id)
+}
+
+// Admin dashboard: number of student accounts (students and club admins).
+function countStudents() {
+  return db.prepare("SELECT COUNT(*) AS n FROM users WHERE role IN ('student', 'club_admin')").get().n
+}
+
 module.exports = {
   findByEmail,
   findByStudentId,
@@ -72,4 +88,7 @@ module.exports = {
   updateLastLogin,
   updateUser,
   updatePasswordIfUnchanged,
+  listAll,
+  setActive,
+  countStudents,
 }
