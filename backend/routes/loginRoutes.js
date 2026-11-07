@@ -32,6 +32,12 @@ router.post('/login', (req, res) => {
     })
   }
 
+  if (user.isActive === false) {
+    return res.status(403).json({
+      message: 'This account has been deactivated. Please contact an administrator.'
+    })
+  }
+
   users.updateLastLogin(user.id)
   const token = createSessionToken(user)
 
