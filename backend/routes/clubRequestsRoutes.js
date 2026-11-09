@@ -3,15 +3,20 @@ const clubRequests = require('../data/clubRequests')
 const { requireAuth } = require('../utils/requireAuth')
 const { requireAdmin } = require('../utils/requireAdmin')
 const { isValidEmail } = require('../utils/validators')
+const { cleanText, hasMarkup } = require('../utils/sanitize')
 
 const router = express.Router()
 
 //Trims the 4 fields and checks: name 3–60 characters, description 20–500, valid email, purpose 10–500
 function readRequestForm(body) {
-  const clubName = String(body.clubName || '').trim()
-  const description = String(body.description || '').trim()
-  const contactEmail = String(body.contactEmail || '').trim().toLowerCase()
-  const purpose = String(body.purpose || '').trim()
+  const clubName = cleanText(body.clubName)
+  const description = cleanText(body.description)
+  const contactEmail = cleanText(body.contactEmail).toLowerCase()
+  const purpose = cleanText(body.purpose)
+
+  if ([clubName, description, purpose].some(hasMarkup)) {
+    return { error: 'Please remove "<" and ">" characters from the form.' }
+  }
 
   if (clubName.length < 3 || clubName.length > 60) {
     return { error: 'Club name must be between 3 and 60 characters.' }
