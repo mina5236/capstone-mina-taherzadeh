@@ -8,13 +8,16 @@ const profileRoutes = require('./routes/profileRoutes')
 const passwordResetRoutes = require('./routes/passwordResetRoutes')
 const eventRoutes = require('./routes/eventsRoutes')
 const clubRequestRoutes = require('./routes/clubRequestsRoutes')
+const adminRoutes = require('./routes/adminRoutes')
 
 const app = express()
 const PORT = process.env.PORT || 3001
+app.disable('x-powered-by')
 
 app.use(express.json())
 
 app.use((req, res, next) => {
+  res.setHeader('X-Content-Type-Options', 'nosniff')
   res.setHeader('Access-Control-Allow-Origin', '*')
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization')
@@ -34,6 +37,7 @@ app.use('/api', profileRoutes)
 app.use('/api', passwordResetRoutes)
 app.use('/api', eventRoutes)
 app.use('/api', clubRequestRoutes)
+app.use('/api', adminRoutes)
 app.get('/api/health', (req, res) => {
   res.status(200).json({ status: 'OK' })
 })
