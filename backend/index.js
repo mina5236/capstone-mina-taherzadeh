@@ -9,6 +9,7 @@ const passwordResetRoutes = require('./routes/passwordResetRoutes')
 const eventRoutes = require('./routes/eventsRoutes')
 const clubRequestRoutes = require('./routes/clubRequestsRoutes')
 const adminRoutes = require('./routes/adminRoutes')
+const clubAdminRoutes = require('./routes/clubAdminRoutes')
 
 const app = express()
 const PORT = process.env.PORT || 3001
@@ -38,6 +39,7 @@ app.use('/api', passwordResetRoutes)
 app.use('/api', eventRoutes)
 app.use('/api', clubRequestRoutes)
 app.use('/api', adminRoutes)
+app.use('/api', clubAdminRoutes)
 app.get('/api/health', (req, res) => {
   res.status(200).json({ status: 'OK' })
 })
