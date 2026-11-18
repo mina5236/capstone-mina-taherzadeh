@@ -10,6 +10,7 @@ import AdminClubRequestsPage from './AdminClubRequestsPage'
 import AdminDashboardPage from './AdminDashboardPage'
 import AdminUsersPage from './AdminUsersPage'
 import AdminClubsPage from './AdminClubsPage'
+import ClubEventsPage from './ClubEventsPage'
 import { API } from './config.js'
 
 function App() {
@@ -59,12 +60,16 @@ function App() {
     }
 
     if (view === 'myEvents') {
-    return <MyEventsPage user={currentUser} onBack={() => setView('dashboard')} onBrowse={() => setView('events')} onLogout={handleLogout}/>
+      return <MyEventsPage user={currentUser} onBack={() => setView('dashboard')} onBrowse={() => setView('events')} onLogout={handleLogout}/>
     }
 
     if (view === 'clubRequest') {
-        return <ClubRequestPage user={currentUser} onBack={() => setView('dashboard')} onLogout={handleLogout} />
+      return <ClubRequestPage user={currentUser} onBack={() => setView('dashboard')} onLogout={handleLogout} />
       }
+      
+    if (view === 'manageEvents') {
+      return <ClubEventsPage user={currentUser} onBack={() => setView('dashboard')} onLogout={handleLogout} />
+    }
     
     if (view === 'adminDashboard') {
       return <AdminDashboardPage user={currentUser} onBack={() => setView('dashboard')} onLogout={handleLogout} onNavigate={setView} />
