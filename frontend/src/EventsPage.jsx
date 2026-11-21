@@ -9,6 +9,7 @@ function EventsPage({ user, onBack, onLogout }) {
   const [selectedId, setSelectedId] = useState(null)
   const [message, setMessage] = useState({ text: '', type: '' })
   const [submitting, setSubmitting] = useState(false)
+  const [saving, setSaving] = useState(false)
 
   const authHeaders = { Authorization: `Bearer ${user.sessionToken}` }
 
@@ -74,6 +75,58 @@ function EventsPage({ user, onBack, onLogout }) {
       setMessage({ text: err.message, type: 'error' })
     } finally {
       setSubmitting(false)
+    }
+  }
+
+
+    //Sends POST (save) or DELETE (remove) for the wish list - F5.4
+  const changeSaved = async (eventId, method) => {
+    if (saving) return
+
+    setSaving(true)
+    setMessage({ text: '', type: '' })
+
+    try {
+      const response = await fetch(`${API}/events/${eventId}/save`, { method, headers: authHeaders })
+      const data = await response.json()
+
+      if (response.status === 401) {
+        onLogout()
+        return
+      }
+
+      if (data.event) {
+        updateEvent(data.event)
+      }
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Something went wrong. Please try again.')
+      }
+
+      setMessage({ text: data.message, type: 'success' })
+    } catch (err) {
+      setMessage({ text: err.message, type: 'error' })
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  // F5.5: share an event
+  const shareText = (item) => `${item.title} - ${item.date} at ${item.location} (${item.clubName}) #CampusConnect`
+  const shareLink = () => window.location.origin + window.location.pathname
+
+  const shareOnX = (item) => {
+    const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText(item))}&url=${encodeURIComponent(shareLink())}`
+    window.open(url, '_blank', 'noopener,noreferrer')
+  }
+
+  // Instagram has no web share link, so the text is copied to paste into a post or story.
+  const copyForInstagram = async (item) => {
+    try {
+      await navigator.clipboard.writeText(`${shareText(item)} ${shareLink()}`)
+      setMessage({ text: 'Event details copied. Paste them into your Instagram post or story.', type: 'success' })
+    } catch {
+      setMessage({ text: 'Could not copy automatically. Please copy the event details by hand.', type: 'error' })
     }
   }
 
@@ -167,6 +220,21 @@ function EventsPage({ user, onBack, onLogout }) {
               {isFull ? 'Event Full' : submitting ? 'Registering...' : 'Register'}
             </button>
           )}
+          
+          <button
+            type="button"
+            className="secondary-btn"
+            disabled={saving}
+            onClick={() => changeSaved(selected.id, selected.isSaved ? 'DELETE' : 'POST')}
+          >
+            {selected.isSaved ? '★ Saved (click to remove)' : '☆ Save Event'}
+          </button>
+          <button type="button" className="secondary-btn" onClick={() => shareOnX(selected)}>
+            🐦 Share on X
+          </button>
+          <button type="button" className="secondary-btn" onClick={() => copyForInstagram(selected)}>
+            📸 Copy for Instagram
+          </button>
         </div>
       </main>
     )
@@ -198,6 +266,7 @@ function EventsPage({ user, onBack, onLogout }) {
                   <p className="profile-info-label">
                     📅 {item.date} · 🏛️ {item.clubName}
                     {item.isRegistered ? ' · ✅ Registered' : ''}
+                    {item.isSaved ? ' · ⭐ Saved' : ''}
                   </p>
                   <button type="button" className="secondary-btn" onClick={() => selectEvent(item.id)}>
                     View Details
