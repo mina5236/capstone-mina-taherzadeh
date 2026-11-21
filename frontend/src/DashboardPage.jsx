@@ -176,6 +176,12 @@ function DashboardPage({ user, onLogout, onNavigate }) {
             <button type="button" className="dropdown-item" onClick={() => onNavigate('myEvents')}>
               🎉 My Registered Events
             </button>
+                        <button type="button" className="dropdown-item" onClick={() => onNavigate('savedEvents')}>
+              ⭐ My Wish List
+            </button>
+            <button type="button" className="dropdown-item" onClick={() => onNavigate('clubs')}>
+              🏛️ Browse Clubs
+            </button>
             <button type="button" className="dropdown-item " onClick={() => onNavigate('clubRequest')}>
               🎪 Request a New Club
             </button>
