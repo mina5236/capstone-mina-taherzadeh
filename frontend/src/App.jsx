@@ -11,6 +11,8 @@ import AdminDashboardPage from './AdminDashboardPage'
 import AdminUsersPage from './AdminUsersPage'
 import AdminClubsPage from './AdminClubsPage'
 import ClubEventsPage from './ClubEventsPage'
+import ClubsPage from './ClubsPage'
+import SavedEventsPage from './SavedEventsPage'
 import { API } from './config.js'
 
 function App() {
@@ -85,6 +87,14 @@ function App() {
 
     if (view === 'adminClubs') {
       return <AdminClubsPage user={currentUser} onBack={() => setView('adminDashboard')} onLogout={handleLogout} />
+    }
+
+    if (view === 'clubs') {
+      return <ClubsPage user={currentUser} onBack={() => setView('dashboard')} onLogout={handleLogout} />
+    }
+
+    if (view === 'savedEvents') {
+      return <SavedEventsPage user={currentUser} onBack={() => setView('dashboard')} onBrowse={() => setView('events')} onLogout={handleLogout} />
     }
 
     return <DashboardPage user={currentUser} onLogout={handleLogout} onNavigate={setView} />
