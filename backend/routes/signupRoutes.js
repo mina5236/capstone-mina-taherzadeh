@@ -9,6 +9,12 @@ const router = express.Router()
 router.post('/signup', (req, res) => {
   const { fullName, email, studentId, password } = req.body || {}
 
+  if ([fullName, email, studentId, password].some((value) => typeof value !== 'string')) {
+    return res.status(400).json({
+      message: 'Full name, email, student ID, and password are required.'
+    })
+  }
+
   if (!fullName || !email || !studentId || !password) {
     return res.status(400).json({
       message: 'Full name, email, student ID, and password are required.'
