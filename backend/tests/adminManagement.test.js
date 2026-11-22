@@ -224,15 +224,18 @@ describe('club administration tools', () => {
 
     const visible = await request(app).get('/events').set(student.auth)
     const deactivated = await request(app).post(`/admin/clubs/${clubId}/deactivate`).set(admin.auth)
+    const statusAfterDeactivate = clubStatus(clubId)
     const hidden = await request(app).get('/events').set(student.auth)
     const reactivated = await request(app).post(`/admin/clubs/${clubId}/reactivate`).set(admin.auth)
+    const statusAfterReactivate = clubStatus(clubId)
     const visibleAgain = await request(app).get('/events').set(student.auth)
 
     expect(visible.body.events).toHaveLength(1)
     expect(deactivated.status).toBe(200)
-    expect(clubStatus(clubId)).toBe('inactive')
+    expect(statusAfterDeactivate).toBe('inactive')
     expect(hidden.body.events).toHaveLength(0)
     expect(reactivated.status).toBe(200)
+    expect(statusAfterReactivate).toBe('approved')
     expect(visibleAgain.body.events).toHaveLength(1)
   })
 
