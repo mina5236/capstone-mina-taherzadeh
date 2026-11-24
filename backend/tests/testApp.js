@@ -9,6 +9,8 @@ const eventsRoutes = require('../routes/eventsRoutes')
 const clubRequestsRoutes = require('../routes/clubRequestsRoutes')
 const adminRoutes = require('../routes/adminRoutes')
 const clubAdminRoutes = require('../routes/clubAdminRoutes')
+const clubsRoutes = require('../routes/clubsRoutes')
+const savedEventsRoutes = require('../routes/savedEventsRoutes')
 const app = express()
 
 app.use(express.json())
@@ -20,5 +22,7 @@ app.use(eventsRoutes)
 app.use(clubRequestsRoutes)
 app.use(adminRoutes)
 app.use(clubAdminRoutes)
+app.use(clubsRoutes)
+app.use(savedEventsRoutes)
 
 module.exports = app
