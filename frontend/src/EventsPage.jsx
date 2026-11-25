@@ -2,11 +2,11 @@ import { useEffect, useState } from 'react'
 import './ProfilePage.css'
 import { API } from './config.js'
 
-function EventsPage({ user, onBack, onLogout }) {
+function EventsPage({ user, onBack, onLogout, initialEventId = null }) {
   const [events, setEvents] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
-  const [selectedId, setSelectedId] = useState(null)
+  const [selectedId, setSelectedId] = useState(initialEventId)
   const [message, setMessage] = useState({ text: '', type: '' })
   const [submitting, setSubmitting] = useState(false)
   const [saving, setSaving] = useState(false)
@@ -161,7 +161,12 @@ function EventsPage({ user, onBack, onLogout }) {
     return (
       <main className="profile-shell">
         <header className="profile-banner">
-          <button type="button" className="profile-back-btn" onClick={() => selectEvent(null)} aria-label="Back to events">
+          <button
+            type="button"
+            className="profile-back-btn"
+            onClick={() => (initialEventId === null ? selectEvent(null) : onBack())}
+            aria-label={initialEventId === null ? 'Back to events' : 'Back to previous page'}
+          >
             ←
           </button>
           <h1>{selected.title}</h1>
