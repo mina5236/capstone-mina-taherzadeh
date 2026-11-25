@@ -6,6 +6,11 @@
     "start": "node index.js",
     "test": "jest --runInBand"
   },
+  "jest": {
+    "testMatch": [
+      "<rootDir>/tests/**/*.test.js"
+    ]
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
