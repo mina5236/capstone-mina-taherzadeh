@@ -3,7 +3,7 @@ import './ProfilePage.css'
 import { API } from './config.js'
 
 // F5.1: browse the active clubs and see the events of each club.
-function ClubsPage({ user, onBack, onLogout }) {
+function ClubsPage({ user, onBack, onLogout, onOpenEvent }) {
   const [clubs, setClubs] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -99,7 +99,7 @@ function ClubsPage({ user, onBack, onLogout }) {
 
         <div className="profile-body">
           <section className="profile-card">
-            <h2>📋 About This Club</h2>
+            <h2><span aria-hidden="true">📋 </span>About This Club</h2>
             <p className="profile-info-value">{selectedClub.description || 'No description provided.'}</p>
           </section>
 
@@ -112,7 +112,12 @@ function ClubsPage({ user, onBack, onLogout }) {
               </div>
             ) : (
               selectedClub.events.map((item) => (
-                <div className="profile-info-row" key={item.id}>
+                <button
+                  type="button"
+                  className="profile-info-row club-event-row"
+                  key={item.id}
+                  onClick={() => onOpenEvent(item.id)}
+                >
                   <span className="profile-info-icon">🎉</span>
                   <div>
                     <p className="profile-info-value">{item.title}</p>
@@ -123,7 +128,7 @@ function ClubsPage({ user, onBack, onLogout }) {
                       👥 {item.currentCount} / {item.maxCapacity} registered
                     </p>
                   </div>
-                </div>
+                </button>
               ))
             )}
           </section>
