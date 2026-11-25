@@ -11,8 +11,14 @@ function EmptyStateCard({ icon, text }) {
   )
 }
 
+function getEventTime(date) {
+  const timestamp = new Date(date.includes('T') ? date : date.replace(' ', 'T')).getTime()
+  return Number.isNaN(timestamp) ? null : timestamp
+}
+
 function DashboardPage({ user, onLogout, onNavigate }) {
   const [events, setEvents] = useState([])
+  const [now] = useState(() => Date.now())
 
   useEffect(() => {
     fetch(`${API}/events`, { headers: { Authorization: `Bearer ${user.sessionToken}` } })
@@ -22,14 +28,23 @@ function DashboardPage({ user, onLogout, onNavigate }) {
       })
       .then((data) => setEvents(data.events || []))
       .catch(() => {})
-  }, [user.id])
+  }, [user.id, user.sessionToken, onLogout])
 
-  const upcomingEvents = events
-    .filter((item) => new Date(item.date.replace(' ', 'T')) >= new Date())
-    .slice(0, 4)
+  const timedEvents = events
+    .map((event) => ({ event, time: getEventTime(event.date) }))
+    .filter(({ time }) => time !== null)
+  const upcomingEvents = [
+    ...timedEvents
+      .filter(({ time }) => time >= now)
+      .sort((a, b) => a.time - b.time),
+    ...timedEvents
+      .filter(({ time }) => time < now)
+      .sort((a, b) => b.time - a.time)
+  ]
+    .slice(0, 2)
+    .map(({ event }) => event)
   const registeredEvents = events.filter((item) => item.isRegistered)
   const popularClubs = []
-  const notifications = []
   const stats = { eventsJoined: registeredEvents.length, clubsFollowed: 0, hoursActive: 0 }
 
   const [openMenu, setOpenMenu] = useState(null)
@@ -52,27 +67,6 @@ function DashboardPage({ user, onLogout, onNavigate }) {
         </div>
 
         <div className="dashboard-header-actions">
-          <div className="dropdown-wrapper">
-            <button
-              type="button"
-              className="dashboard-bell"
-              aria-label="Notifications"
-              onClick={() => toggleMenu('notifications')}
-            >
-              🔔
-            </button>
-
-            {openMenu === 'notifications' && (
-              <div className="dropdown-panel">
-                {notifications.length === 0 ? (
-                  <p className="dropdown-empty">No notifications yet</p>
-                ) : (
-                  notifications.map((note) => <p key={note.id}>{note.text}</p>)
-                )}
-              </div>
-            )}
-          </div>
-
           <div className="dropdown-wrapper">
             <button
               type="button"
@@ -137,11 +131,16 @@ function DashboardPage({ user, onLogout, onNavigate }) {
           ) : (
             <div className="events-grid">
               {upcomingEvents.map((event) => (
-                <div className="event-card" key={event.id}>
+                <button
+                  type="button"
+                  className="event-card"
+                  key={event.id}
+                  onClick={() => onNavigate('eventDetails', event.id)}
+                >
                   <strong>{event.title}</strong>
                   <p>📅 {event.date}</p>
                   <p>🏛️ {event.clubName} · 📍 {event.location}</p>
-                </div>
+                </button>
               ))}
             </div>
           )}
