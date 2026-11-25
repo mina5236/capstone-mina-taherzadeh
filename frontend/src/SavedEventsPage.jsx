@@ -3,7 +3,7 @@ import './ProfilePage.css'
 import { API } from './config.js'
 
 // F5.4: the student's wish list. Loads /events and keeps only the isSaved ones.
-function SavedEventsPage({ user, onBack, onBrowse, onLogout }) {
+function SavedEventsPage({ user, onBack, onBrowse, onOpenEvent, onLogout }) {
   const [events, setEvents] = useState([])
   const [loading, setLoading] = useState(true)
   const [message, setMessage] = useState({ text: '', type: '' })
@@ -84,6 +84,9 @@ function SavedEventsPage({ user, onBack, onBrowse, onLogout }) {
                     🏛️ {item.clubName} · 📍 {item.location}
                     {item.isRegistered ? ' · ✅ Registered' : ''}
                   </p>
+                  <button type="button" className="secondary-btn" onClick={() => onOpenEvent(item.id)}>
+                    View Event
+                  </button>
                   <button
                     type="button"
                     className="secondary-btn"
