@@ -19,6 +19,14 @@ function App() {
   const [currentUser, setCurrentUser] = useState(null)
   const resetToken = new URLSearchParams(window.location.search).get('resetToken')
   const [view, setView] = useState('dashboard')
+  const [selectedEventId, setSelectedEventId] = useState(null)
+  const [eventOrigin, setEventOrigin] = useState('dashboard')
+
+  const openEvent = (eventId, origin) => {
+    setEventOrigin(origin)
+    setSelectedEventId(eventId)
+    setView('eventDetails')
+  }
 
   const handleLoginSuccess = (user) => {
     setCurrentUser(user)
@@ -61,6 +69,17 @@ function App() {
       return <EventsPage user={currentUser} onBack={() => setView('dashboard')} onLogout={handleLogout} />
     }
 
+    if (view === 'eventDetails') {
+      return (
+        <EventsPage
+          user={currentUser}
+          initialEventId={selectedEventId}
+          onBack={() => setView(eventOrigin)}
+          onLogout={handleLogout}
+        />
+      )
+    }
+
     if (view === 'myEvents') {
       return <MyEventsPage user={currentUser} onBack={() => setView('dashboard')} onBrowse={() => setView('events')} onLogout={handleLogout}/>
     }
@@ -90,14 +109,41 @@ function App() {
     }
 
     if (view === 'clubs') {
-      return <ClubsPage user={currentUser} onBack={() => setView('dashboard')} onLogout={handleLogout} />
+      return (
+        <ClubsPage
+          user={currentUser}
+          onBack={() => setView('dashboard')}
+          onOpenEvent={(eventId) => openEvent(eventId, 'clubs')}
+          onLogout={handleLogout}
+        />
+      )
     }
 
     if (view === 'savedEvents') {
-      return <SavedEventsPage user={currentUser} onBack={() => setView('dashboard')} onBrowse={() => setView('events')} onLogout={handleLogout} />
+      return (
+        <SavedEventsPage
+          user={currentUser}
+          onBack={() => setView('dashboard')}
+          onBrowse={() => setView('events')}
+          onOpenEvent={(eventId) => openEvent(eventId, 'savedEvents')}
+          onLogout={handleLogout}
+        />
+      )
     }
 
-    return <DashboardPage user={currentUser} onLogout={handleLogout} onNavigate={setView} />
+    return (
+      <DashboardPage
+        user={currentUser}
+        onLogout={handleLogout}
+        onNavigate={(target, eventId) => {
+          if (target === 'eventDetails') {
+            openEvent(eventId, 'dashboard')
+          } else {
+            setView(target)
+          }
+        }}
+      />
+    )
   }
 
   if (view === 'signup') {
