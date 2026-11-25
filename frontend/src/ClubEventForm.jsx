@@ -116,7 +116,7 @@ function ClubEventForm({ user, clubs, event, onCancel, onSaved, onLogout }) {
             {!isEditing && (
               <label className="field-group" htmlFor="clubId">
                 <span className="field-label">🏛️ Club</span>
-                <div className="input-shell">
+                <div className="input-shell input-shell-select">
                   <select id="clubId" name="clubId" value={form.clubId} onChange={handleChange}>
                     {clubs.map((club) => (
                       <option key={club.id} value={club.id}>
@@ -144,7 +144,7 @@ function ClubEventForm({ user, clubs, event, onCancel, onSaved, onLogout }) {
 
             <label className="field-group" htmlFor="date">
               <span className="field-label">📅 Date</span>
-              <div className="input-shell">
+              <div className="input-shell input-shell-date">
                 <input
                   id="date"
                   name="date"
@@ -158,7 +158,7 @@ function ClubEventForm({ user, clubs, event, onCancel, onSaved, onLogout }) {
 
             <label className="field-group" htmlFor="time">
               <span className="field-label">⏰ Time</span>
-              <div className="input-shell">
+              <div className="input-shell input-shell-time">
                 <input id="time" name="time" type="time" value={form.time} onChange={handleChange} />
               </div>
             </label>
