@@ -176,7 +176,7 @@ function ClubEventsPage({ user, onBack, onLogout }) {
             </div>
           ) : (
             events.map((item) => (
-              <div className="profile-info-row" key={item.id}>
+              <div className="profile-info-row managed-event-row" key={item.id}>
                 <div>
                   <p className="profile-info-value">{item.title}</p>
                   <p className="profile-info-label">
