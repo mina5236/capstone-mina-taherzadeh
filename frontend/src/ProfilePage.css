@@ -417,6 +417,11 @@
   flex: 0 1 540px;
 }
 
+.managed-event-row .secondary-btn {
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .form-message {
   margin: 4px 0 12px;
   font-weight: 700;
