@@ -4,6 +4,7 @@ const { requireAuth } = require('../utils/requireAuth')
 const { requireAdmin } = require('../utils/requireAdmin')
 const { isValidEmail } = require('../utils/validators')
 const { cleanText, hasMarkup } = require('../utils/sanitize')
+const users = require('../data/users')
 
 const router = express.Router()
 
@@ -41,6 +42,12 @@ function parseRequestId(req) {
 
 // Student: submit a request. Name and student ID come from the logged-in account.
 router.post('/club-requests', requireAuth, (req, res) => {
+  const requester = users.findById(req.userId)
+
+  if (requester && requester.role === 'platform_admin') {
+    return res.status(403).json({ message: 'Platform administrators cannot request clubs.' })
+  }
+
   const form = readRequestForm(req.body || {})
 
   if (form.error) {

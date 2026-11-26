@@ -181,9 +181,11 @@ function DashboardPage({ user, onLogout, onNavigate }) {
             <button type="button" className="dropdown-item" onClick={() => onNavigate('clubs')}>
               🏛️ Browse Clubs
             </button>
-            <button type="button" className="dropdown-item " onClick={() => onNavigate('clubRequest')}>
-              🎪 Request a New Club
-            </button>
+            {user.role !== 'platform_admin' && (
+              <button type="button" className="dropdown-item" onClick={() => onNavigate('clubRequest')}>
+                🎪 Request a New Club
+              </button>
+            )}
             
             {user.role === 'club_admin' && (
               <button type="button" className="dropdown-item" onClick={() => onNavigate('manageEvents')}>
