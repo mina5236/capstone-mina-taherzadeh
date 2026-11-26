@@ -456,12 +456,12 @@ describe('club admin access protection', () => {
     expect(response.status).toBe(401)
   })
 
-  test('a platform admin who owns a club can create events too', async () => {
-    const admin = makePerson('platform_admin')
-    const clubId = makeClub(admin.id)
+  test('a platform admin cannot manage events (403)', async () => {
+  const admin = makePerson('platform_admin')
+  const clubId = makeClub(admin.id)
 
-    const response = await request(app).post('/club-admin/events').set(admin.auth).send(formBody(clubId))
+  const response = await request(app).post('/club-admin/events').set(admin.auth).send(formBody(clubId))
 
-    expect(response.status).toBe(201)
-  })
+  expect(response.status).toBe(403)
+})
 })

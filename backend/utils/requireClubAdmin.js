@@ -7,7 +7,7 @@ function requireClubAdmin(req, res, next) {
   requireAuth(req, res, () => {
     const user = users.findById(req.userId)
 
-    if (!user || !['club_admin', 'platform_admin'].includes(user.role)) {
+    if (!user || user.role !== 'club_admin') {
       return res.status(403).json({ message: 'Club administrator access required.' })
     }
 

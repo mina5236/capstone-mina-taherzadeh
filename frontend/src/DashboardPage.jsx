@@ -185,7 +185,7 @@ function DashboardPage({ user, onLogout, onNavigate }) {
               🎪 Request a New Club
             </button>
             
-            {(user.role === 'club_admin' || user.role === 'platform_admin') && (
+            {user.role === 'club_admin' && (
               <button type="button" className="dropdown-item" onClick={() => onNavigate('manageEvents')}>
                 🎪 Manage My Events
               </button>
